@@ -18,8 +18,8 @@ const ANIMATIONS = [
 
 const MAIN_LINKS = [
   { to: "/", label: "Accueil" },
-  { to: "/projets", label: "Mes Projets" },
-  { to: "/#apropos", label: "A propos" },
+  { to: "/projects", label: "Mes Projets" },
+  { to: "/about", label: "A propos" },
 ];
 
 const SOCIAL_LINKS = [

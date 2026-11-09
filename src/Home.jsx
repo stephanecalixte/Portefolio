@@ -594,16 +594,7 @@ const Home = () => {
         .terminal-pre { scrollbar-width: none; -ms-overflow-style: none; }
       `}</style>
 
-      {/* <button
-        ref={hamburgerRef}
-        className={styles.hamburger}
-        type="button"
-        aria-label="Ouvrir le menu"
-        aria-expanded="false"
-        aria-controls="nav-bar"
-      >
-        <span></span><span></span><span></span>
-      </button> */}
+
 
       {/* ═══════════════════════════════════════════════════════
           HERO

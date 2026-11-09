@@ -8,7 +8,10 @@ import "./fonts.css";
 import Navbar from "./components/navbar/Navbar.jsx";
 import Footer from "./components/footer/footer.jsx";
 import Home from "./Home.jsx";
-import Projects from "./pages/Projects.jsx";
+import Projects from "./pages/project/Projects.jsx";
+import About from "./pages/about/About.jsx";
+
+
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -16,7 +19,8 @@ createRoot(document.getElementById("root")).render(
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/projets" element={<Projects />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/about" element={<About />} />
       </Routes>
       <Footer />
     </BrowserRouter>
