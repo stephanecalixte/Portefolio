@@ -1,0 +1,638 @@
+/* ============================================================
+   CALIXTE — 40 animations Awwwards enchaînées
+   ============================================================ */
+
+.container {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    padding: 40px;
+    overflow: hidden;
+    pointer-events: auto;
+}
+
+.calixteText {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.05em;
+    font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.2rem, 8vw, 7.5rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #ffffff;
+    perspective: 1200px;
+    z-index: 100;
+}
+
+.line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.char {
+    display: inline-block;
+    will-change: transform, opacity, filter;
+    backface-visibility: hidden;
+    transform-origin: center center;
+}
+
+.indicator {
+    position: absolute;
+    bottom: 20px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 1px;
+    pointer-events: none;
+    z-index: 5;
+}
+.animName { color: #7fd0ff; font-weight: 700; letter-spacing: 2px; }
+.counter { color: rgba(255,255,255,0.5); }
+.cycle { color: rgba(255,255,255,0.25); font-size: 8px; }
+
+/* ============================================================
+   1. SPLIT REVEAL 3D
+   ============================================================ */
+.anim_splitReveal3D .char {
+    animation: splitReveal3D 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 0.04s);
+    transform-origin: center bottom;
+}
+@keyframes splitReveal3D {
+    0%   { opacity: 0; transform: translateY(120%) rotateX(-95deg); }
+    100% { opacity: 1; transform: translateY(0) rotateX(0); }
+}
+
+/* ============================================================
+   2. ELASTIC SNAP
+   ============================================================ */
+.anim_elasticSnap .char {
+    animation: elasticSnap 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
+    animation-delay: calc(var(--i) * 0.03s);
+}
+@keyframes elasticSnap {
+    0%   { opacity: 0; transform: scale(0) rotate(180deg); }
+    60%  { opacity: 1; transform: scale(1.25) rotate(-15deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+/* ============================================================
+   3. GRAVITY FALL
+   ============================================================ */
+.anim_gravityFall .char {
+    animation: gravityFall 1.3s cubic-bezier(0.55, 0.05, 0.45, 0.95) both;
+    animation-delay: calc(var(--i) * 0.03s);
+}
+@keyframes gravityFall {
+    0%   { opacity: 0; transform: translateY(-400%); }
+    60%  { opacity: 1; transform: translateY(15%); }
+    80%  { transform: translateY(-5%); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   4. SLICE SLIDE (alterné)
+   ============================================================ */
+.anim_sliceSlide .char {
+    animation: sliceSlideL 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 0.04s);
+}
+.anim_sliceSlide .char:nth-child(even) {
+    animation-name: sliceSlideR;
+}
+@keyframes sliceSlideL {
+    0%   { opacity: 0; transform: translateX(-200%); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+@keyframes sliceSlideR {
+    0%   { opacity: 0; transform: translateX(200%); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+/* ============================================================
+   5. DEPTH BLUR
+   ============================================================ */
+.anim_depthBlur .char {
+    animation: depthBlur 1.3s ease-out both;
+    animation-delay: calc(var(--i) * 0.04s);
+}
+@keyframes depthBlur {
+    0%   { opacity: 0; filter: blur(30px); transform: scale(2); }
+    100% { opacity: 1; filter: blur(0);    transform: scale(1); }
+}
+
+/* ============================================================
+   6. PERSPECTIVE TILT
+   ============================================================ */
+.anim_perspectiveTilt .char {
+    animation: perspectiveTilt 1.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 0.04s);
+}
+@keyframes perspectiveTilt {
+    0%   { opacity: 0; transform: rotateX(90deg) translateZ(-150px); }
+    100% { opacity: 1; transform: rotateX(0) translateZ(0); }
+}
+
+/* ============================================================
+   7. KALEIDOSCOPE
+   ============================================================ */
+.anim_kaleidoscope .char {
+    animation: kaleidoscope 1.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 0.05s);
+}
+.anim_kaleidoscope .char:nth-child(odd) {
+    animation-name: kaleidoscopeA;
+}
+@keyframes kaleidoscopeA {
+    0%   { opacity: 0; transform: rotateY(-180deg) rotateZ(-180deg) scale(0); }
+    100% { opacity: 1; transform: rotateY(0) rotateZ(0) scale(1); }
+}
+@keyframes kaleidoscope {
+    0%   { opacity: 0; transform: rotateY(180deg) rotateZ(180deg) scale(0); }
+    100% { opacity: 1; transform: rotateY(0) rotateZ(0) scale(1); }
+}
+
+/* ============================================================
+   8. TYPEWRITER
+   ============================================================ */
+.anim_typewriter .char {
+    animation: typewriter 0.05s steps(1) both;
+    animation-delay: calc(var(--i) * 0.07s);
+}
+@keyframes typewriter {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* ============================================================
+   9. ORIGAMI
+   ============================================================ */
+.anim_origami .char {
+    animation: origami 1.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
+    animation-delay: calc(var(--i) * 0.05s);
+    transform-origin: center top;
+}
+@keyframes origami {
+    0%   { opacity: 0; transform: rotateX(180deg) skewX(45deg) scaleY(0); }
+    100% { opacity: 1; transform: rotateX(0) skewX(0) scaleY(1); }
+}
+
+/* ============================================================
+   10. MIRROR REFLECT
+   ============================================================ */
+.anim_mirrorReflect .char {
+    animation: mirrorReflect 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 0.03s);
+}
+@keyframes mirrorReflect {
+    0%   { opacity: 0; transform: scaleY(-1) translateY(-100%); }
+    100% { opacity: 1; transform: scaleY(1) translateY(0); }
+}
+
+/* ============================================================
+   11. WAVE MORPH (loop)
+   ============================================================ */
+.anim_waveMorph .char {
+    animation: waveMorph 0.8s ease-in-out infinite;
+    animation-delay: calc(var(--i) * -0.08s);
+}
+@keyframes waveMorph {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-35%); }
+}
+
+/* ============================================================
+   12. NEON PULSE (loop)
+   ============================================================ */
+.anim_neonPulse .char {
+    animation: neonPulse 0.7s ease-in-out infinite;
+    animation-delay: calc(var(--i) * -0.1s);
+}
+@keyframes neonPulse {
+    0%, 100% {
+        color: #ffffff;
+        text-shadow: 0 0 5px #fff, 0 0 15px #7fd0ff, 0 0 30px #7fd0ff;
+    }
+    50% {
+        color: #e0f8ff;
+        text-shadow: 0 0 10px #fff, 0 0 30px #7fd0ff, 0 0 60px #7fd0ff, 0 0 100px #7fd0ff;
+    }
+}
+
+/* ============================================================
+   13. GLITCH RGB (loop)
+   ============================================================ */
+.anim_glitchRGB .char {
+    animation: glitchRGB 0.4s steps(2) infinite;
+    animation-delay: calc(var(--i) * -0.05s);
+}
+@keyframes glitchRGB {
+    0%   { text-shadow: -3px 0 #ff00ff, 3px 0 #00ffff; transform: translateX(0); }
+    25%  { text-shadow:  3px 0 #ff00ff, -3px 0 #00ffff; transform: translateX(-3px); }
+    50%  { text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff; transform: translateX(3px); }
+    75%  { text-shadow:  2px 0 #ff00ff, -2px 0 #00ffff; transform: translateX(-1px); }
+    100% { text-shadow: -3px 0 #ff00ff, 3px 0 #00ffff; transform: translateX(0); }
+}
+
+/* ============================================================
+   14. HOLOGRAM (scan lines)
+   ============================================================ */
+.anim_hologram .char {
+    color: transparent;
+    background: repeating-linear-gradient(
+        0deg,
+        #00ffff 0, #00ffff 1px,
+        transparent 1px, transparent 4px
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: hologram 0.4s linear infinite;
+}
+@keyframes hologram {
+    0%   { background-position: 0 0; opacity: 1; }
+    50%  { opacity: 0.65; }
+    100% { background-position: 0 8px; opacity: 1; }
+}
+
+/* ============================================================
+   15. MATRIX RAIN (loop)
+   ============================================================ */
+.anim_matrixRain .char {
+    color: #00ff41;
+    text-shadow: 0 0 8px #00ff41, 0 0 20px #00ff41;
+    animation: matrixRain 0.7s ease-out infinite;
+    animation-delay: calc(var(--i) * -0.1s);
+}
+@keyframes matrixRain {
+    0%   { opacity: 0; transform: translateY(-25px); }
+    40%  { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0.2; transform: translateY(25px); }
+}
+
+/* ============================================================
+   16. MORSE CODE (loop)
+   ============================================================ */
+.anim_morseCode .char {
+    animation: morseCode 0.6s steps(1) infinite;
+    animation-delay: calc(var(--i) * 0.18s);
+}
+@keyframes morseCode {
+    0%   { opacity: 0; }
+    30%  { opacity: 1; }
+    60%  { opacity: 1; }
+    70%  { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+/* ============================================================
+   17. HALFTONE (dot pattern)
+   ============================================================ */
+.anim_halftone .char {
+    color: transparent;
+    background-image: radial-gradient(circle, #ffffff 30%, transparent 30%);
+    background-size: 4px 4px;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: halftoneMove 0.5s linear infinite;
+}
+@keyframes halftoneMove {
+    0%   { background-position: 0 0; }
+    100% { background-position: 8px 8px; }
+}
+
+/* ============================================================
+   18. STROBE (loop)
+   ============================================================ */
+.anim_strobe .char {
+    animation: strobe 0.15s steps(2) infinite;
+    animation-delay: calc(var(--i) * 0.02s);
+}
+@keyframes strobe {
+    0%   { opacity: 1; }
+    50%  { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* ============================================================
+   19. VAPORIZE
+   ============================================================ */
+.anim_vaporize .char {
+    animation: vaporize 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 0.04s);
+}
+@keyframes vaporize {
+    0%   { opacity: 0; transform: scale(3) translateY(30px); filter: blur(30px); }
+    70%  { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+    100% { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+
+/* ============================================================
+   20. EXPLOSION
+   ============================================================ */
+.anim_explosion .char {
+    animation: explosion 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 0.03s);
+}
+@keyframes explosion {
+    0%   { opacity: 0; transform: scale(0) translateY(80px); }
+    45%  { opacity: 1; transform: scale(1.6) translateY(-15px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ============================================================
+   21. ICE SHATTER (alterné)
+   ============================================================ */
+.anim_iceShatter .char {
+    animation: iceShatterA 1.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 0.04s);
+}
+.anim_iceShatter .char:nth-child(even) {
+    animation-name: iceShatterB;
+}
+@keyframes iceShatterA {
+    0%   { opacity: 0; transform: translate(-100px, -50px) rotate(-120deg) scale(0); filter: blur(8px); }
+    100% { opacity: 1; transform: translate(0, 0) rotate(0) scale(1); filter: blur(0); }
+}
+@keyframes iceShatterB {
+    0%   { opacity: 0; transform: translate(100px, 50px) rotate(120deg) scale(0); filter: blur(8px); }
+    100% { opacity: 1; transform: translate(0, 0) rotate(0) scale(1); filter: blur(0); }
+}
+
+/* ============================================================
+   22. SMOKE RISE
+   ============================================================ */
+.anim_smokeRise .char {
+    animation: smokeRise 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 0.05s);
+}
+@keyframes smokeRise {
+    0%   { opacity: 0; transform: translateY(60px) scale(1.8); filter: blur(15px); }
+    100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+/* ============================================================
+   23. FIRE BURN
+   ============================================================ */
+.anim_fireBurn .char {
+    animation: fireBurn 1.3s ease-out both;
+    animation-delay: calc(var(--i) * 0.05s);
+}
+@keyframes fireBurn {
+    0%   { opacity: 0; color: #ff0000; text-shadow: 0 0 25px #ff8800, 0 0 50px #ff4400; transform: translateY(30px) scale(1.5); filter: blur(8px); }
+    50%  { opacity: 1; color: #ffcc00; text-shadow: 0 0 20px #ffcc00, 0 0 40px #ff8800; }
+    100% { opacity: 1; color: #ffffff; text-shadow: 0 0 5px #ffffff; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+/* ============================================================
+   24. PIXELATE
+   ============================================================ */
+.anim_pixelate .char {
+    animation: pixelate 1.4s steps(8) both;
+    animation-delay: calc(var(--i) * 0.04s);
+}
+@keyframes pixelate {
+    0%   { opacity: 0; filter: blur(25px); transform: scale(2.5); }
+    100% { opacity: 1; filter: blur(0); transform: scale(1); }
+}
+
+/* ============================================================
+   25. TURBULENCE (shake loop)
+   ============================================================ */
+.anim_turbulence .char {
+    animation: turbulence 0.5s ease-in-out infinite;
+    animation-delay: calc(var(--i) * -0.05s);
+}
+@keyframes turbulence {
+    0%, 100% { transform: translate(0, 0) rotate(0); filter: blur(0); }
+    25%      { transform: translate(-3px, 2px) rotate(-1.5deg); filter: blur(0.6px); }
+    50%      { transform: translate(3px, -2px) rotate(1.5deg); filter: blur(0); }
+    75%      { transform: translate(-2px, -3px) rotate(-0.8deg); filter: blur(0.3px); }
+}
+
+/* ============================================================
+   26. MAGNETIC CURSOR (JS, no CSS animation)
+   ============================================================ */
+.anim_magneticCursor .char {
+    /* géré par GSAP */
+}
+
+/* ============================================================
+   27. SCRAMBLE (JS, no CSS animation)
+   ============================================================ */
+.anim_scramble .char {
+    font-family: 'Courier New', 'Consolas', monospace;
+    color: #7fd0ff;
+    text-shadow: 0 0 10px #7fd0ff;
+}
+
+/* ============================================================
+   28. VORTEX
+   ============================================================ */
+.anim_vortex .char {
+    animation: vortex 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
+    animation-delay: calc(var(--i) * 0.04s);
+}
+@keyframes vortex {
+    0%   { opacity: 0; transform: rotate(720deg) scale(0) translateY(120px); }
+    100% { opacity: 1; transform: rotate(0) scale(1) translateY(0); }
+}
+
+/* ============================================================
+   29. ROTATE CYLINDER
+   ============================================================ */
+.anim_rotateCylinder .char {
+    animation: rotateCylinder 1.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 0.05s);
+}
+@keyframes rotateCylinder {
+    0%   { opacity: 0; transform: rotateY(180deg); }
+    100% { opacity: 1; transform: rotateY(0); }
+}
+
+/* ============================================================
+   30. WIND SHAKE
+   ============================================================ */
+.anim_windShake .char {
+    animation: windShake 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 0.03s);
+}
+@keyframes windShake {
+    0%   { opacity: 0; transform: translateX(-40px) skewX(35deg); }
+    35%  { opacity: 1; transform: translateX(15px) skewX(-20deg); }
+    65%  { transform: translateX(-8px) skewX(10deg); }
+    100% { opacity: 1; transform: translateX(0) skewX(0); }
+}
+
+/* ============================================================
+   31. BASS DROP
+   ============================================================ */
+.anim_bassDrop .char {
+    animation: bassDrop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation-delay: calc(var(--i) * 0.02s);
+}
+@keyframes bassDrop {
+    0%   { opacity: 0; transform: scale(3.5); filter: blur(25px); }
+    100% { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+
+/* ============================================================
+   32. RIPPLE
+   ============================================================ */
+.anim_ripple .char {
+    animation: ripple 1.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 0.03s);
+}
+@keyframes ripple {
+    0%   { opacity: 0; transform: scale(3); filter: blur(15px); }
+    100% { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+
+/* ============================================================
+   33. CHROMATIC ABERRATION
+   ============================================================ */
+.anim_chromaticAberration .char {
+    animation: chromaticAberration 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 0.04s);
+}
+@keyframes chromaticAberration {
+    0%   { opacity: 0; text-shadow: -25px 0 #ff0000, 25px 0 #00ffff; transform: scale(1.5); }
+    100% { opacity: 1; text-shadow: 0 0 transparent, 0 0 transparent; transform: scale(1); }
+}
+
+/* ============================================================
+   34. CHROMATIC BLUR
+   ============================================================ */
+.anim_chromaticBlur .char {
+    animation: chromaticBlur 1.3s ease-out both;
+    animation-delay: calc(var(--i) * 0.04s);
+}
+@keyframes chromaticBlur {
+    0%   { opacity: 0; filter: blur(20px); text-shadow: -15px 0 #ff00ff, 15px 0 #00ffff; }
+    100% { opacity: 1; filter: blur(0); text-shadow: 0 0 transparent; }
+}
+
+/* ============================================================
+   35. STAGGER BLUR
+   ============================================================ */
+.anim_staggerBlur .char {
+    animation: staggerBlur 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 0.05s);
+}
+@keyframes staggerBlur {
+    0%   { opacity: 0; filter: blur(25px); transform: translateX(-60px); }
+    100% { opacity: 1; filter: blur(0); transform: translateX(0); }
+}
+
+/* ============================================================
+   36. LIQUID FILL
+   ============================================================ */
+.anim_liquidFill .char {
+    background: linear-gradient(180deg, #7fd0ff 50%, #ffffff 50%);
+    background-size: 100% 200%;
+    background-position: 0 -100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: liquidFill 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 0.04s);
+}
+@keyframes liquidFill {
+    0%   { background-position: 0 -100%; }
+    100% { background-position: 0 100%; }
+}
+
+/* ============================================================
+   37. LIQUID MORPH
+   ============================================================ */
+.anim_liquidMorph .char {
+    animation: liquidMorph 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 0.03s);
+}
+@keyframes liquidMorph {
+    0%   { opacity: 0; filter: blur(15px) saturate(3); transform: scale(1.4) skewX(25deg) skewY(10deg); }
+    50%  { opacity: 1; filter: blur(0) saturate(1); transform: scale(1) skewX(-8deg) skewY(-3deg); }
+    100% { opacity: 1; filter: blur(0) saturate(1); transform: scale(1) skewX(0) skewY(0); }
+}
+
+/* ============================================================
+   38. GLITCH GRID
+   ============================================================ */
+.anim_glitchGrid .char {
+    animation: glitchGrid 0.5s steps(3) infinite;
+    animation-delay: calc(var(--i) * -0.05s);
+}
+@keyframes glitchGrid {
+    0%   { transform: translate(0, 0); color: #fff; }
+    33%  { transform: translate(-4px, 3px); color: #ff00ff; }
+    66%  { transform: translate(4px, -3px); color: #00ffff; }
+    100% { transform: translate(0, 0); color: #fff; }
+}
+
+/* ============================================================
+   39. ASCII ART
+   ============================================================ */
+.anim_asciiArt .char {
+    font-family: 'Courier New', monospace;
+    color: #00ff41;
+    animation: asciiArt 1.3s steps(6) both;
+    animation-delay: calc(var(--i) * 0.03s);
+}
+@keyframes asciiArt {
+    0%   { opacity: 0; letter-spacing: 40px; filter: blur(8px); color: #00ff41; }
+    100% { opacity: 1; letter-spacing: 0.02em; filter: blur(0); color: #ffffff; }
+}
+
+/* ============================================================
+   40. MASS SPRING
+   ============================================================ */
+.anim_massSpring .char {
+    animation: massSpring 1.2s cubic-bezier(0.68, -0.6, 0.32, 1.6) both;
+    animation-delay: calc(var(--i) * 0.03s);
+}
+@keyframes massSpring {
+    0%   { opacity: 0; transform: translateY(-120px) scale(0.8); }
+    45%  { opacity: 1; transform: translateY(20px) scale(1.1); }
+    70%  { transform: translateY(-10px) scale(1); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .calixteText {
+        font-size: clamp(1.8rem, 11vw, 4.5rem);
+        gap: 0.1em;
+    }
+    .container { padding: 20px; }
+    .indicator { font-size: 8px; bottom: 12px; right: 12px; }
+}
+
+@media (max-width: 480px) {
+    .calixteText { font-size: clamp(1.6rem, 13vw, 3.5rem); }
+}
+/* ============================================================
+   POLICES — le composant applique un `fontFamily` inline.
+   Ce bloc optionnel définit des fallbacks visuels cohérents
+   si la police Google n'est pas chargée.
+   ============================================================ */
+
+/* Fallback global : sans-serif propre */
+.calixteText {
+    font-family: 'Inter', sans-serif;
+}

@@ -1,0 +1,763 @@
+/* ============================================================
+   HOME — CSS Module
+   Fichier : Home.module.css
+   ============================================================ */
+
+/* ========== RESET LOCAL ========== */
+.home *,
+.home *::before,
+.home *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ========== CONTENEUR PRINCIPAL ========== */
+.home {
+    width: 100%;
+    min-height: 100vh;
+    background: #08090b;
+    color: #e8edf2;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    overflow-x: hidden;
+    position: relative;
+    isolation: isolate;
+}
+
+/* ============================================================
+   HAMBURGER
+   ============================================================ */
+.hamburger {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    width: 44px;
+    height: 44px;
+    background: rgba(20, 25, 30, 0.85);
+    border: 1px solid rgba(127, 208, 255, 0.3);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+}
+
+.hamburger:hover {
+    background: rgba(30, 40, 50, 0.95);
+    border-color: #7fd0ff;
+}
+
+.hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #e8edf2;
+    border-radius: 2px;
+}
+
+/* ============================================================
+   NAV BAR
+   ============================================================ */
+.navBar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 300px;
+    background: rgba(10, 15, 20, 0.98);
+    backdrop-filter: blur(12px);
+    border-left: 1px solid rgba(127, 208, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    z-index: 999;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.navBarOpen {
+    transform: translateX(0);
+}
+
+.navBar a {
+    color: #e8edf2;
+    text-decoration: none;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.navBar a:hover {
+    color: #7fd0ff;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #000;
+    z-index: 1;
+}
+
+.hero h1 {
+    position: relative;
+    z-index: 2;
+    font-size: clamp(2rem, 6vw, 5rem);
+    font-weight: 900;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
+    mix-blend-mode: difference;
+}
+
+.backgroundVideoContainer {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.backgroundVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.scrollIndicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: #e8edf2;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.8;
+    animation: scrollFloat 2.5s ease-in-out infinite;
+}
+
+@keyframes scrollFloat {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%      { transform: translateX(-50%) translateY(-10px); }
+}
+
+.arrow {
+    width: 20px;
+    height: 20px;
+    border-right: 2px solid #e8edf2;
+    border-bottom: 2px solid #e8edf2;
+    transform: rotate(45deg);
+}
+
+/* ============================================================
+   SECTION UNIQUE — 100vh, pinned 500vh
+   ============================================================ */
+.scroll-section {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: radial-gradient(circle at 50% 30%, #0f1419 0%, #050708 100%);
+    overflow: hidden;
+    isolation: isolate;
+    z-index: 0;
+}
+
+.svgWrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.sceneSvg {
+    width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    display: block;
+}
+
+.racksWrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.fanWrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.6);
+    z-index: 10;
+    pointer-events: auto;
+    will-change: transform, opacity;
+}
+
+.videoOverlay {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.videoOverlay video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ============================================================
+   MONITOR
+   ============================================================ */
+.monitor {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #0c0d0f;
+    border: 1px solid #2a2e33;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.monitor-header {
+    padding: 8px 14px;
+    background: linear-gradient(180deg, #1e2228 0%, #14171b 100%);
+    border-bottom: 1px solid #2a2e33;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.monitor-header h3 {
+    color: #7fd0ff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.monitor-header p {
+    color: #6b7885;
+    font-size: 8px;
+    letter-spacing: 0.3px;
+    font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.monitor pre {
+    flex: 1;
+    padding: 10px 14px;
+    color: #d4d8dd;
+    font-size: 10px;
+    line-height: 1.5;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: 'Consolas', 'Courier New', monospace;
+    background: #0c0d0f;
+}
+
+.cursor,
+.cursorBlink {
+    color: #7fd0ff;
+    font-weight: 700;
+    animation: blinkTerminalCursor 1s step-end infinite;
+}
+
+@keyframes blinkTerminalCursor {
+    0%, 50%   { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+/* ============================================================
+   TV SECTION — CORRIGÉ
+   ⚠️ FIX : align-content + align-items + box-sizing
+   ============================================================ */
+.tv-section {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    padding: 100px 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 60px 40px;
+    align-content: center;      /* ⬅️ FIX : centre les rangées verticalement */
+    align-items: center;        /* ⬅️ FIX : centre les items dans leurs cellules */
+    justify-items: center;
+    background: radial-gradient(circle at 50% 50%, #0a0d10 0%, #030405 100%);
+    z-index: 1;
+    box-sizing: border-box;     /* ⬅️ FIX : padding inclus dans le 100vh */
+    isolation: isolate;
+}
+
+.tv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;             /* ⬅️ FIX : centre horizontalement dans sa cellule */
+}
+
+.tv-body {
+    width: 100%;
+    background: linear-gradient(180deg, #1a1d22 0%, #0e1013 100%);
+    border: 2px solid #2a2e33;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+}
+
+.vents {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    padding-bottom: 6px;
+}
+
+.vents span {
+    display: block;
+    width: 14px;
+    height: 2px;
+    background: #2a2e33;
+    border-radius: 1px;
+}
+
+.tv-screen {
+    background: radial-gradient(circle at 50% 30%, #0d1a24 0%, #05080b 100%);
+    border: 1px solid #1a1f24;
+    border-radius: 6px;
+    padding: 12px;
+    aspect-ratio: 16 / 10;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+.tv-statusbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 8px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    color: #6b7885;
+    flex-shrink: 0;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #2ecc40;
+    box-shadow: 0 0 6px #2ecc40;
+}
+
+.status-label {
+    color: #7fd0ff;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.status-ip {
+    margin-left: auto;
+    color: #6b7885;
+}
+
+.tv-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow: hidden;
+}
+
+.tv-content h3 {
+    font-size: 12px;
+    color: #7fd0ff;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+    font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.tv-content p {
+    font-size: 9px;
+    color: #9aa9b8;
+    line-height: 1.4;
+    font-family: 'Consolas', 'Courier New', monospace;
+    overflow: hidden;
+}
+
+.tv-cursor {
+    position: absolute;
+    bottom: 10px;
+    right: 12px;
+    color: #7fd0ff;
+    font-size: 10px;
+    animation: blinkTerminalCursor 1s step-end infinite;
+}
+
+.tv-flash {
+    position: absolute;
+    inset: 0;
+    background: #ffffff;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.tv-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #2a2e33;
+}
+
+.power-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #2a2e33 0%, #14171b 100%);
+    border: 1px solid #3a3f45;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+}
+
+.power-btn:hover {
+    border-color: #2ecc40;
+    box-shadow: 0 0 10px rgba(46, 204, 64, 0.4);
+}
+
+.power-icon {
+    display: block;
+    width: 8px;
+    height: 8px;
+    border: 1.5px solid #2ecc40;
+    border-radius: 50%;
+    position: relative;
+    border-top-color: transparent;
+}
+
+.power-icon::before {
+    content: "";
+    position: absolute;
+    top: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1.5px;
+    height: 5px;
+    background: #2ecc40;
+}
+
+.led-group {
+    display: flex;
+    gap: 6px;
+}
+
+.led-green,
+.led-amber,
+.led-blue {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.led-green {
+    background: #2ecc40;
+    box-shadow: 0 0 5px #2ecc40;
+}
+
+.led-amber {
+    background: #ff9500;
+    box-shadow: 0 0 5px #ff9500;
+}
+
+.led-blue {
+    background: #1a73e8;
+    box-shadow: 0 0 5px #1a73e8;
+}
+
+.ports {
+    margin-left: auto;
+    display: flex;
+    gap: 3px;
+}
+
+.port {
+    display: block;
+    width: 12px;
+    height: 8px;
+    background: linear-gradient(180deg, #2c3036 0%, #14171a 100%);
+    border: 1px solid #05070a;
+    border-radius: 1px;
+}
+
+/* ⚠️ FIX : margin-top: 0 (plus de décalage de -2px) */
+.tv-legs {
+    display: flex;
+    gap: 60px;
+    justify-content: center;
+    margin-top: 0;
+}
+
+.tv-leg {
+    width: 8px;
+    height: 30px;
+    background: linear-gradient(180deg, #1a1d22 0%, #0e1013 100%);
+    border: 1px solid #2a2e33;
+    border-top: none;
+    border-radius: 0 0 3px 3px;
+}
+
+/* ============================================================
+   VERTICAL SECTION
+   ============================================================ */
+.vertical-section {
+    position: relative;
+    width: 100%;
+    padding: 100px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 100px;
+    align-items: center;
+    background: #08090b;
+    z-index: 1;
+    isolation: isolate;
+}
+
+.vertical-section .box {
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(127, 208, 255, 0.15);
+}
+
+.vertical-section .box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ============================================================
+   HORIZONTAL SECTION
+   ============================================================ */
+.horizontal-section {
+    position: relative;
+    width: max-content;
+    height: 100vh;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    background: #08090b;
+    will-change: transform;
+    z-index: 1;
+}
+
+.horizontal-section .box {
+    flex-shrink: 0;
+    width: 70vw;
+    max-width: 900px;
+    height: 80vh;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(127, 208, 255, 0.15);
+}
+
+.horizontal-section .box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+    .tv-section {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 50px 30px;
+        padding: 80px 24px;
+    }
+
+    .monitor-header h3 {
+        font-size: 10px;
+    }
+
+    .monitor pre {
+        font-size: 9px;
+    }
+}
+
+@media (max-width: 768px) {
+    .navBar {
+        width: 100%;
+    }
+
+    .hero h1 {
+        font-size: 2.2rem;
+        letter-spacing: 2px;
+    }
+
+    .tv-section {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 60px 16px;
+    }
+
+    .tv {
+        max-width: 100%;
+    }
+
+    .monitor-header {
+        padding: 6px 10px;
+    }
+
+    .monitor-header h3 {
+        font-size: 9px;
+    }
+
+    .monitor-header p {
+        font-size: 7px;
+    }
+
+    .monitor pre {
+        font-size: 8px;
+        padding: 8px 10px;
+    }
+
+    .vertical-section {
+        padding: 60px 16px;
+        gap: 60px;
+    }
+
+    .horizontal-section {
+        padding: 0 16px;
+        gap: 20px;
+    }
+
+    .horizontal-section .box {
+        width: 85vw;
+        height: 70vh;
+    }
+
+    .scrollIndicator {
+        bottom: 24px;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 1.6rem;
+    }
+
+    .tv-content h3 {
+        font-size: 10px;
+    }
+
+    .tv-content p {
+        font-size: 8px;
+    }
+
+    .monitor pre {
+        font-size: 7px;
+        line-height: 1.4;
+    }
+}
+/* HERO CTA */
+.heroCta {
+    position: absolute;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+}
+
+.projectsBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #4da6ff 0%, #00c8ff 100%);
+    color: #000;
+    text-decoration: none;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(77, 166, 255, 0.35);
+    white-space: nowrap;
+}
+
+.projectsBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(77, 166, 255, 0.55);
+    gap: 14px;
+}
+
+@media (max-width: 600px) {
+    .heroCta {
+        bottom: 80px;
+    }
+    .projectsBtn {
+        padding: 12px 22px;
+        font-size: 10px;
+    }
+}

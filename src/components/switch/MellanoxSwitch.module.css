@@ -1,0 +1,446 @@
+/* ============================================================
+   MELLANOX MCS7520 — CSS Module
+   Fichier : mellanox_switch.module.css
+   ============================================================ */
+
+/* ========== RESET LOCAL ========== */
+.container *,
+.container *::before,
+.container *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ========== CONTENEUR PRINCIPAL ========== */
+.container {
+    background: radial-gradient(circle at 50% 30%, #1a222c 0%, #080b0f 100%);
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    padding: 40px 20px;
+    gap: 30px;
+    box-sizing: border-box;
+}
+
+/* ============================================================
+   MODE COMPACT — intégration dans foreignObject / SVG
+   ============================================================ */
+.container.compact {
+    min-height: auto;
+    padding: 0;
+    gap: 0;
+    background: transparent;
+    width: auto;
+}
+
+.container.compact .chassis {
+    width: 1100px;
+    padding: 14px 16px;
+    gap: 12px;
+}
+
+/* ============================================================
+   CHÂSSIS 12U
+   ============================================================ */
+.chassis {
+    width: 100%;
+    max-width: 1100px;
+    background: linear-gradient(180deg, #2a2e33 0%, #1c2025 40%, #14171b 100%);
+    border-radius: 10px;
+    border: 1px solid #3a3f45;
+    box-shadow:
+        0 25px 50px rgba(0, 0, 0, 0.75),
+        0 8px 15px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    padding: 20px 22px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ============================================================
+   EN-TÊTE DU CHÂSSIS
+   ============================================================ */
+.chassis_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.logo_bars {
+    display: flex;
+    gap: 3px;
+    align-items: flex-end;
+    height: 20px;
+}
+
+.logo_bars span {
+    display: block;
+    width: 4px;
+    background: #76b900;
+    border-radius: 2px;
+}
+
+.logo_bars span:nth-child(1) { height: 8px; }
+.logo_bars span:nth-child(2) { height: 14px; }
+.logo_bars span:nth-child(3) { height: 20px; }
+.logo_bars span:nth-child(4) { height: 14px; }
+.logo_bars span:nth-child(5) { height: 20px; }
+.logo_bars span:nth-child(6) { height: 14px; }
+.logo_bars span:nth-child(7) { height: 8px; }
+
+.brand_name {
+    font-family: 'Arial Black', sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: #e8edf2;
+    font-weight: 900;
+}
+
+.brand_name span {
+    color: #76b900;
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-left: 6px;
+}
+
+.model_label {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: #9aa9b8;
+    letter-spacing: 1.5px;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================================
+   BODY ROW — skills à gauche | leaf modules à droite
+   ============================================================ */
+.body_row {
+    display: flex;
+    gap: 14px;
+    align-items: stretch;
+}
+
+/* ============================================================
+   SKILLS PANEL
+   ============================================================ */
+.skills_section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 14px;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    min-width: 160px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+}
+
+.skills_title {
+    font-size: 7px;
+    color: #6b7885;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.skill_item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.skill_led {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 6px #22c55e;
+    flex-shrink: 0;
+}
+
+.skill_label {
+    font-family: monospace;
+    font-size: 12px;
+    color: #94a3b8;
+    letter-spacing: 2px;
+}
+
+/* ============================================================
+   ZONE DES MODULES LEAF
+   ============================================================ */
+.leaf_section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+}
+
+.leaf_section_title {
+    font-size: 7px;
+    letter-spacing: 1px;
+    color: #6b7885;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.leaf_grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+}
+
+/* 3 leafs en mode compact (avec skills) */
+.leaf_grid[data-count="3"] {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.leaf_module {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.leaf_module_label {
+    font-size: 6px;
+    letter-spacing: 0.6px;
+    color: #76b900;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.port_grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 3px;
+}
+
+/* ---------- Port QSFP28 ---------- */
+.port_qsfp {
+    aspect-ratio: 1 / 1.25;
+    background: linear-gradient(180deg, #33383e 0%, #0f1215 100%);
+    border: 1px solid #05070a;
+    border-radius: 2px;
+    position: relative;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.port_qsfp::after {
+    content: "";
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 2px;
+    background: #33ff77;
+    border-radius: 1px;
+    box-shadow: 0 0 3px #33ff77;
+    opacity: 0.8;
+}
+
+.port_qsfp::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 1px;
+    background: #6b7178;
+    border-radius: 1px;
+}
+
+/* ============================================================
+   ZONE MANAGEMENT / LED SYSTÈME
+   ============================================================ */
+.system_section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.mgmt_ports {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mgmt_item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.port_rj45 {
+    width: 18px;
+    height: 16px;
+    background: linear-gradient(180deg, #2c3036 0%, #111417 100%);
+    border: 1px solid #04070a;
+    border-radius: 2px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.port_usb {
+    width: 12px;
+    height: 16px;
+    background: linear-gradient(180deg, #2c3036 0%, #111417 100%);
+    border: 1px solid #04070a;
+    border-radius: 2px;
+}
+
+.mgmt_label {
+    font-size: 5.5px;
+    color: #6b7885;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.system_leds {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+}
+
+.led_group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.led {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+.led.green  { background: #2ecc40; box-shadow: 0 0 7px #2ecc40; }
+.led.amber  { background: #ff9500; box-shadow: 0 0 7px #ff9500; }
+.led.red    { background: #e60012; box-shadow: 0 0 7px #e60012; }
+.led.blue   { background: #1a73e8; box-shadow: 0 0 7px #1a73e8; }
+.led.off    { background: #3a3f45; }
+
+.led_caption {
+    font-size: 5.5px;
+    color: #6b7885;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+/* ============================================================
+   LÉGENDE
+   ============================================================ */
+.legend {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    justify-content: center;
+    color: #9aa9b8;
+    font-size: 0.82rem;
+}
+
+.legend_item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.legend_dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    box-shadow: 0 0 6px currentColor;
+}
+
+.legend_dot.green  { background: #33ff77; color: #33ff77; }
+.legend_dot.amber  { background: #ffcc00; color: #ffcc00; }
+.legend_dot.red    { background: #e60012; color: #e60012; }
+.legend_dot.blue   { background: #1a73e8; color: #1a73e8; }
+
+/* ============================================================
+   CAPTION
+   ============================================================ */
+.caption {
+    text-align: center;
+    color: #6b7885;
+    font-size: 0.78rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+    .leaf_grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .chassis {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 600px) {
+    .leaf_grid,
+    .leaf_grid[data-count="3"] {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .chassis_header,
+    .system_section,
+    .body_row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .skills_section {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        width: 100%;
+    }
+}

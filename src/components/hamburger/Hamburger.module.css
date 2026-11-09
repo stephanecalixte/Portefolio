@@ -1,0 +1,171 @@
+/* ============================================================
+   HAMBURGER — composant autonome
+   Fichier : Hamburger.module.css
+   ============================================================ */
+
+.hamburger {
+    --size: var(--hamburger-size, 44px);
+    --bar-width: calc(var(--size) * 0.5);
+    --bar-height: max(2px, calc(var(--size) * 0.045));
+    --bar-gap: calc(var(--size) * 0.11);
+    --color: #e8edf2;
+    --color-active: #7fd0ff;
+    --bg: rgba(20, 25, 30, 0.85);
+    --bg-hover: rgba(30, 40, 50, 0.95);
+    --border: rgba(127, 208, 255, 0.3);
+    --border-hover: #7fd0ff;
+    --radius: 8px;
+
+    position: fixed;
+    z-index: 1100;
+    width: var(--size);
+    height: var(--size);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.15s ease,
+        box-shadow 0.25s ease;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+.hamburger:hover:not(:disabled) {
+    background: var(--bg-hover);
+    border-color: var(--border-hover);
+    box-shadow: 0 0 20px rgba(127, 208, 255, 0.2);
+}
+
+.hamburger:active:not(:disabled) {
+    transform: scale(0.94);
+}
+
+.hamburger:focus-visible {
+    outline: 2px solid var(--color-active);
+    outline-offset: 3px;
+}
+
+.hamburger:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Caché sur desktop (>= 1400px) */
+@media (min-width: 1400px) {
+    .hamburger {
+        display: none;
+    }
+}
+
+.box {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--bar-gap);
+    width: var(--bar-width);
+    height: calc(var(--bar-height) * 3 + var(--bar-gap) * 2);
+}
+
+.bar {
+    display: block;
+    width: 100%;
+    height: var(--bar-height);
+    background: var(--color);
+    border-radius: calc(var(--bar-height) / 2);
+    transform-origin: center center;
+    transition:
+        transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+        opacity 0.25s ease,
+        background 0.25s ease,
+        width 0.3s ease;
+    will-change: transform, opacity;
+}
+
+.hamburger[data-state="open"] .bar {
+    background: var(--color-active);
+}
+
+/* Positions */
+.top-right {
+    top: 20px;
+    right: 20px;
+}
+.top-left {
+    top: 20px;
+    left: 20px;
+}
+.bottom-right {
+    bottom: 20px;
+    right: 20px;
+}
+.bottom-left {
+    bottom: 20px;
+    left: 20px;
+}
+
+/* Animation spin (défaut) */
+.anim_spin.isOpen .bar[data-bar="1"] {
+    transform: translateY(calc(var(--bar-gap) + var(--bar-height))) rotate(45deg);
+}
+.anim_spin.isOpen .bar[data-bar="2"] {
+    opacity: 0;
+    transform: scaleX(0);
+}
+.anim_spin.isOpen .bar[data-bar="3"] {
+    transform: translateY(calc(-1 * (var(--bar-gap) + var(--bar-height)))) rotate(-45deg);
+}
+
+/* Animation squeeze */
+.anim_squeeze.isOpen .bar[data-bar="1"] {
+    transform: translateY(calc(var(--bar-gap) + var(--bar-height))) rotate(45deg);
+}
+.anim_squeeze.isOpen .bar[data-bar="2"] {
+    transform: scaleX(0);
+    opacity: 0;
+}
+.anim_squeeze.isOpen .bar[data-bar="3"] {
+    transform: translateY(calc(-1 * (var(--bar-gap) + var(--bar-height)))) rotate(-45deg);
+}
+
+/* Animation slide */
+.anim_slide .bar {
+    transition:
+        transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.3s ease,
+        background 0.25s ease,
+        width 0.3s ease;
+}
+
+.anim_slide.isOpen .bar[data-bar="1"] {
+    transform: translateY(calc(var(--bar-gap) + var(--bar-height))) scaleX(1.15);
+    width: 80%;
+    rotate: 45deg;
+}
+.anim_slide.isOpen .bar[data-bar="2"] {
+    opacity: 0;
+    transform: translateX(20px);
+}
+.anim_slide.isOpen .bar[data-bar="3"] {
+    transform: translateY(calc(-1 * (var(--bar-gap) + var(--bar-height)))) scaleX(1.15);
+    width: 80%;
+    rotate: -45deg;
+}
+
+/* Accessibilité */
+@media (prefers-reduced-motion: reduce) {
+    .hamburger,
+    .bar {
+        transition: none !important;
+    }
+}

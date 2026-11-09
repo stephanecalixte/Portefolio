@@ -1,0 +1,406 @@
+/* ============================================================
+   FORTIGATE 121G — CSS Module
+   Fichier : firewall_fortigate.module.css
+   ============================================================ */
+
+/* ========== RESET LOCAL (scopé via :global imbriqué) ========== */
+.container *,
+.container *::before,
+.container *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ========== CONTENEUR PRINCIPAL ========== */
+.container {
+    background: radial-gradient(circle at 50% 30%, #1a222c 0%, #080b0f 100%);
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    padding: 40px 20px;
+    gap: 30px;
+    box-sizing: border-box;
+}
+
+/* ============================================================
+   CHÂSSIS 1U
+   ============================================================ */
+.firewall {
+    width: 100%;
+    max-width: 1080px;
+    height: 120px;
+    background: linear-gradient(180deg, #e8eaed 0%, #c9ced4 45%, #a8afb7 100%);
+    border-radius: 8px;
+    border: 1px solid #5c636b;
+    box-shadow:
+        0 22px 45px rgba(0, 0, 0, 0.65),
+        0 6px 12px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.85),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 14px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Vis de rack décoratives */
+.firewall::before,
+.firewall::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #555 0%, #1a1a1a 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.firewall::before { left: 5px; }
+.firewall::after  { right: 5px; }
+
+/* ============================================================
+   LOGO FORTINET
+   ============================================================ */
+.logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    gap: 3px;
+    padding-right: 10px;
+    border-right: 1px solid rgba(0, 0, 0, 0.18);
+    height: 75%;
+}
+
+.logo_icon {
+    width: 36px;
+    height: 26px;
+    position: relative;
+}
+
+.logo_icon::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-bottom: 26px solid #e60012;
+}
+
+.logo_icon::after {
+    content: "";
+    position: absolute;
+    top: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-bottom: 16px solid #d9dde2;
+}
+
+.logo_text {
+    font-family: 'Arial Black', sans-serif;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    color: #1a1a1a;
+    font-weight: 900;
+}
+
+/* ============================================================
+   GROUPES DE PORTS
+   ============================================================ */
+.port_group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.port_group_label {
+    font-size: 6px;
+    letter-spacing: 0.4px;
+    color: #2a2f35;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.port_row {
+    display: flex;
+    gap: 3px;
+}
+
+/* ---------- Ports GE RJ45 (switch) ---------- */
+.port_rj45 {
+    width: 15px;
+    height: 24px;
+    background: linear-gradient(180deg, #2c3036 0%, #111417 100%);
+    border: 1px solid #04070a;
+    border-radius: 2px;
+    position: relative;
+    box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.8);
+}
+
+.port_rj45::after {
+    content: "";
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 2px;
+    background: #33ff77;
+    border-radius: 1px;
+    box-shadow: 0 0 4px #33ff77;
+    opacity: 0.85;
+}
+
+/* ---------- Ports GE SFP ---------- */
+.port_sfp {
+    width: 21px;
+    height: 27px;
+    background: linear-gradient(180deg, #34393f 0%, #0d1013 100%);
+    border: 1px solid #04070a;
+    border-radius: 2px;
+    position: relative;
+    box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.85);
+}
+
+.port_sfp::after {
+    content: "";
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 3px;
+    background: #ffcc00;
+    border-radius: 1px;
+    box-shadow: 0 0 5px #ffcc00;
+}
+
+.port_sfp::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 2px;
+    background: #6b7178;
+    border-radius: 1px;
+}
+
+/* ---------- Ports 10GE SFP+ (FortiLink) ---------- */
+.port_sfpp {
+    width: 24px;
+    height: 30px;
+    background: linear-gradient(180deg, #3a3f46 0%, #0a0d10 100%);
+    border: 1px solid #04070a;
+    border-radius: 3px;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.port_sfpp::after {
+    content: "";
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 3px;
+    background: #00c8ff;
+    border-radius: 1px;
+    box-shadow: 0 0 6px #00c8ff;
+}
+
+.port_sfpp::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 2px;
+    background: #7a8088;
+    border-radius: 1px;
+}
+
+/* ============================================================
+   BLOC MANAGEMENT / CONSOLE / USB / LEDs
+   ============================================================ */
+.mgmt {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-left: 10px;
+    border-left: 1px solid rgba(0, 0, 0, 0.18);
+    height: 82%;
+    justify-content: center;
+}
+
+.mgmt_row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.port_mgmt_rj45 {
+    width: 15px;
+    height: 14px;
+    background: linear-gradient(180deg, #2c3036 0%, #111417 100%);
+    border: 1px solid #04070a;
+    border-radius: 2px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.port_usb {
+    width: 10px;
+    height: 14px;
+    background: linear-gradient(180deg, #2c3036 0%, #111417 100%);
+    border: 1px solid #04070a;
+    border-radius: 2px;
+}
+
+.leds {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-left: 4px;
+}
+
+.led {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+/* Couleurs des LEDs — classes composées */
+.led.green  { background: #2ecc40; box-shadow: 0 0 6px #2ecc40; }
+.led.amber  { background: #ff9500; box-shadow: 0 0 6px #ff9500; }
+.led.red    { background: #e60012; box-shadow: 0 0 6px #e60012; }
+.led.off    { background: #4a4f55; }
+.led.blue   { background: #1a73e8; box-shadow: 0 0 6px #1a73e8; }
+
+.mgmt_label {
+    font-size: 5.5px;
+    color: #2a2f35;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    text-align: center;
+    margin-top: 1px;
+}
+
+/* ============================================================
+   ÉTIQUETTE MODÈLE
+   ============================================================ */
+.model_tag {
+    position: absolute;
+    bottom: 6px;
+    right: 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 8px;
+    color: #2a2f35;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    background: rgba(255, 255, 255, 0.4);
+    padding: 2px 7px;
+    border-radius: 3px;
+}
+
+/* ============================================================
+   LÉGENDE
+   ============================================================ */
+.legend {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    justify-content: center;
+    color: #9aa9b8;
+    font-size: 0.82rem;
+}
+
+.legend_item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.legend_dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    box-shadow: 0 0 6px currentColor;
+}
+
+/* Couleurs des dots — classes composées */
+.legend_dot.green  { background: #33ff77; color: #33ff77; }
+.legend_dot.amber  { background: #ffcc00; color: #ffcc00; }
+.legend_dot.blue   { background: #00c8ff; color: #00c8ff; }
+
+/* ============================================================
+   CAPTION
+   ============================================================ */
+.caption {
+    text-align: center;
+    color: #6b7885;
+    font-size: 0.78rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 950px) {
+    .firewall {
+        transform: scale(0.8);
+        transform-origin: center;
+    }
+}
+
+@media (max-width: 750px) {
+    .firewall {
+        height: auto;
+        flex-direction: column;
+        padding: 22px;
+        transform: none;
+        gap: 18px;
+    }
+
+    .logo {
+        border-right: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+        padding-bottom: 8px;
+    }
+
+    .mgmt {
+        border-left: none;
+        border-top: 1px solid rgba(0, 0, 0, 0.18);
+        padding-top: 10px;
+        padding-left: 0;
+    }
+
+    .model_tag {
+        position: static;
+        margin-top: 10px;
+    }
+}

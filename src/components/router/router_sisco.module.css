@@ -1,0 +1,368 @@
+/* ============================================================
+   CISCO N540-24Z8Q2C-SYS — CSS Module
+   Fichier : router_sisco.module.css
+   ============================================================ */
+
+/* ========== RESET LOCAL ========== */
+.container *,
+.container *::before,
+.container *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ========== CONTENEUR PRINCIPAL ========== */
+.container {
+    background: radial-gradient(circle at 50% 30%, #1e2a38 0%, #0a0f14 100%);
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    padding: 40px 20px;
+    gap: 30px;
+    box-sizing: border-box;
+}
+
+/* ============================================================
+   MODE COMPACT — intégration dans foreignObject / SVG
+   ============================================================ */
+.container.compact {
+    min-height: auto;
+    padding: 0;
+    gap: 0;
+    background: transparent;
+    width: auto;
+}
+
+.container.compact .router {
+    width: 1000px;
+}
+
+/* ============================================================
+   CHÂSSIS ROUTEUR 1U
+   ============================================================ */
+.router {
+    width: 100%;
+    max-width: 1000px;
+    height: 110px;
+    background: linear-gradient(180deg, #d9dde2 0%, #b8bfc6 40%, #9aa2a9 100%);
+    border-radius: 8px;
+    border: 1px solid #6c7379;
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.6),
+        0 5px 10px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    gap: 14px;
+    position: relative;
+    overflow: hidden;
+}
+
+.router::before,
+.router::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #555 0%, #222 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.router::before { left: 6px; }
+.router::after  { right: 6px; }
+
+/* ============================================================
+   LOGO CISCO
+   ============================================================ */
+.logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 70px;
+    gap: 4px;
+    padding-right: 8px;
+    border-right: 1px solid rgba(0, 0, 0, 0.15);
+    height: 70%;
+}
+
+.logo_bars {
+    display: flex;
+    gap: 3px;
+    align-items: flex-end;
+    height: 22px;
+}
+
+.logo_bars span {
+    display: block;
+    width: 5px;
+    background: #1a73e8;
+    border-radius: 2px;
+}
+
+.logo_bars span:nth-child(1) { height: 10px; }
+.logo_bars span:nth-child(2) { height: 16px; }
+.logo_bars span:nth-child(3) { height: 22px; }
+.logo_bars span:nth-child(4) { height: 16px; }
+.logo_bars span:nth-child(5) { height: 22px; }
+.logo_bars span:nth-child(6) { height: 16px; }
+.logo_bars span:nth-child(7) { height: 10px; }
+
+.logo_text {
+    font-family: 'Arial Black', sans-serif;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: #1a1a1a;
+    font-weight: 900;
+}
+
+/* ============================================================
+   GROUPES DE PORTS
+   ============================================================ */
+.port_group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.port_group_label {
+    font-size: 7px;
+    letter-spacing: 0.5px;
+    color: #2a2f35;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.port_row {
+    display: flex;
+    gap: 3px;
+}
+
+/* ---------- Ports Multi-Gig ---------- */
+.port_mg {
+    width: 16px;
+    height: 26px;
+    background: linear-gradient(180deg, #2c3036 0%, #14171a 100%);
+    border: 1px solid #05070a;
+    border-radius: 2px;
+    position: relative;
+    box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.8);
+}
+
+.port_mg::after {
+    content: "";
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 2px;
+    background: #33ff77;
+    border-radius: 1px;
+    box-shadow: 0 0 4px #33ff77;
+}
+
+/* ---------- Ports 100GE QSFP28 ---------- */
+.port_qsfp {
+    width: 24px;
+    height: 30px;
+    background: linear-gradient(180deg, #33383e 0%, #0f1215 100%);
+    border: 1px solid #05070a;
+    border-radius: 3px;
+    position: relative;
+    box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.85);
+}
+
+.port_qsfp::after {
+    content: "";
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 3px;
+    background: #ffcc00;
+    border-radius: 1px;
+    box-shadow: 0 0 6px #ffcc00;
+}
+
+.port_qsfp::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 2px;
+    background: #6b7178;
+    border-radius: 1px;
+}
+
+/* ============================================================
+   BLOC MANAGEMENT / CONSOLE / LED
+   ============================================================ */
+.mgmt {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-left: 10px;
+    border-left: 1px solid rgba(0, 0, 0, 0.15);
+    height: 80%;
+    justify-content: center;
+}
+
+.mgmt_row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.port_rj45 {
+    width: 16px;
+    height: 14px;
+    background: linear-gradient(180deg, #2c3036 0%, #14171a 100%);
+    border: 1px solid #05070a;
+    border-radius: 2px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.port_usb {
+    width: 10px;
+    height: 14px;
+    background: linear-gradient(180deg, #2c3036 0%, #14171a 100%);
+    border: 1px solid #05070a;
+    border-radius: 2px;
+}
+
+.leds {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-left: 4px;
+}
+
+.led {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.led.green  { background: #2ecc40; box-shadow: 0 0 6px #2ecc40; }
+.led.amber  { background: #ff9500; box-shadow: 0 0 6px #ff9500; }
+.led.blue   { background: #1a73e8; box-shadow: 0 0 6px #1a73e8; }
+.led.off    { background: #4a4f55; }
+
+.mgmt_label {
+    font-size: 6px;
+    color: #2a2f35;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-align: center;
+    margin-top: 1px;
+}
+
+/* ============================================================
+   ÉTIQUETTE MODÈLE
+   ============================================================ */
+.model_tag {
+    position: absolute;
+    bottom: 6px;
+    right: 18px;
+    font-family: 'Courier New', monospace;
+    font-size: 8px;
+    color: #2a2f35;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    background: rgba(255, 255, 255, 0.35);
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+/* ============================================================
+   LÉGENDE
+   ============================================================ */
+.legend {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+    color: #9aa9b8;
+    font-size: 0.85rem;
+}
+
+.legend_item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.legend_dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-shadow: 0 0 6px currentColor;
+}
+
+.legend_dot.green  { background: #33ff77; color: #33ff77; }
+.legend_dot.amber  { background: #ffcc00; color: #ffcc00; }
+.legend_dot.blue   { background: #1a73e8; color: #1a73e8; }
+
+/* ============================================================
+   CAPTION
+   ============================================================ */
+.caption {
+    text-align: center;
+    color: #6b7885;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+    .router {
+        transform: scale(0.85);
+        transform-origin: center;
+    }
+}
+
+@media (max-width: 700px) {
+    .router {
+        height: auto;
+        flex-direction: column;
+        padding: 20px;
+        transform: none;
+        gap: 16px;
+    }
+
+    .logo {
+        border-right: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+        padding-bottom: 8px;
+    }
+
+    .mgmt {
+        border-left: none;
+        border-top: 1px solid rgba(0, 0, 0, 0.15);
+        padding-top: 10px;
+        padding-left: 0;
+    }
+
+    .model_tag {
+        position: static;
+        margin-top: 8px;
+    }
+}

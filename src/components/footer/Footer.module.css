@@ -1,0 +1,16 @@
+:root{
+    --background: #000026;
+}
+
+
+.footer{
+
+position: fixed;
+bottom: 0;
+height: 50px;
+left: 0;
+background-color: var(--background);
+text-align: center;
+width: 100%;
+z-index: 1000;
+}

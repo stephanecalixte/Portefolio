@@ -1,0 +1,489 @@
+/* ============================================================
+   FAN CONTROLLER — Ventilateur fonctionnel + variateur
+   Fichier : FanController.module.css
+   ============================================================ */
+
+.wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    padding: 40px;
+    background: radial-gradient(circle at 40% 40%, #0f1419 0%, #050708 100%);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    flex-wrap: wrap;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ASSEMBLAGE VENTILATEUR
+   ═══════════════════════════════════════════════════════════════ */
+.fanAssembly {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.frame {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 45%, #1a2028 0%, #0a0e14 100%);
+    border: 4px solid #2a323c;
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.8),
+        inset 0 4px 10px rgba(255, 255, 255, 0.05),
+        inset 0 -8px 20px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+}
+
+/* ─── Grille ─── */
+.guard {
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.guardRing {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - var(--i) * 12%);
+    height: calc(100% - var(--i) * 12%);
+    border: 1px solid rgba(100, 130, 160, 0.25);
+    border-radius: 50%;
+}
+
+.guardSpoke {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1px;
+    height: 50%;
+    background: linear-gradient(180deg, transparent, rgba(100, 130, 160, 0.3));
+    transform-origin: top center;
+    transform: rotate(calc(var(--i) * 30deg)) translateX(50%);
+}
+
+.guardCenter {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #2a323c 0%, #0a0e14 100%);
+    border: 2px solid #3a424c;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+    z-index: 6;
+}
+
+/* ─── Rotor (les pales) ─── */
+.rotor {
+    position: absolute;
+    inset: 20px;
+    border-radius: 50%;
+    animation-name: spin;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform;
+    z-index: 3;
+    transform-origin: center center;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* ─── Pales ─── */
+.blade {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 42%;
+    height: 26%;
+    background: linear-gradient(135deg, #2e3a48 0%, #1a222c 60%, #0f1419 100%);
+    border-radius: 60% 20% 60% 20% / 80% 30% 80% 30%;
+    transform-origin: left center;
+    transform:
+        translate(0, -50%)
+        rotate(calc(var(--i) * 72deg))
+        skewY(-8deg);
+    box-shadow:
+        inset 0 2px 4px rgba(255, 255, 255, 0.12),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.6),
+        0 3px 8px rgba(0, 0, 0, 0.5);
+    border: 1px solid #3a4552;
+}
+
+/* Reflet sur chaque pale */
+.blade::before {
+    content: "";
+    position: absolute;
+    top: 10%;
+    left: 5%;
+    width: 90%;
+    height: 25%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent);
+    border-radius: 50%;
+}
+
+/* ─── Moyeu central ─── */
+.hub {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #4a5664 0%, #2a323c 40%, #0f1419 100%);
+    border: 2px solid #3a424c;
+    box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.8),
+        inset 0 2px 4px rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 4;
+}
+
+.hubCore {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #7fd0ff 0%, #4da6ff 60%, #0a1a2a 100%);
+    box-shadow:
+        0 0 10px rgba(127, 208, 255, 0.7),
+        inset 0 0 4px rgba(255, 255, 255, 0.4);
+}
+
+/* ─── Flou de mouvement ─── */
+.motionBlur {
+    position: absolute;
+    inset: 20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, transparent 20%, rgba(120, 150, 180, 0.3) 60%, transparent 85%);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 4;
+    mix-blend-mode: screen;
+}
+
+/* ─── Anneau LED ─── */
+.ledRing {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid rgba(127, 208, 255, 0.15);
+    pointer-events: none;
+    transition: all 0.4s ease;
+    z-index: 1;
+}
+
+.ledRing[data-on="true"] {
+    border-color: rgba(127, 208, 255, 0.7);
+    box-shadow:
+        0 0 20px rgba(127, 208, 255, 0.5),
+        0 0 40px rgba(127, 208, 255, 0.25),
+        inset 0 0 20px rgba(127, 208, 255, 0.15);
+}
+
+/* ─── Pied / support ─── */
+.stand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: -8px;
+}
+
+.standNeck {
+    width: 32px;
+    height: 28px;
+    background: linear-gradient(180deg, #2a323c 0%, #0f1419 100%);
+    border: 1px solid #3a424c;
+    border-radius: 0 0 4px 4px;
+    box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.standBase {
+    width: 140px;
+    height: 14px;
+    background: linear-gradient(180deg, #2a323c 0%, #0f1419 100%);
+    border: 1px solid #3a424c;
+    border-radius: 8px;
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PANNEAU DE CONTRÔLE
+   ═══════════════════════════════════════════════════════════════ */
+.panel {
+    width: 320px;
+    padding: 24px;
+    background: linear-gradient(180deg, #14181e 0%, #0a0e14 100%);
+    border: 1px solid #2a323c;
+    border-radius: 14px;
+    box-shadow:
+        0 25px 50px rgba(0, 0, 0, 0.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ─── Display ─── */
+.display {
+    background: #05080b;
+    border: 1px solid #1a2128;
+    border-radius: 8px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.8);
+    font-family: 'Courier New', monospace;
+}
+
+.displayRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.displayLabel {
+    font-size: 9px;
+    color: #6b7885;
+    letter-spacing: 2px;
+    font-weight: 700;
+}
+
+.displayValue {
+    font-size: 12px;
+    color: #7fd0ff;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.displayBig {
+    font-size: 24px;
+    color: #7fd0ff;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(127, 208, 255, 0.6);
+}
+
+.statusDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #2a323c;
+    transition: all 0.3s ease;
+    margin-left: auto;
+    margin-right: 8px;
+}
+
+.statusDot[data-on="true"] {
+    background: #00ff88;
+    box-shadow: 0 0 8px #00ff88, 0 0 16px rgba(0, 255, 136, 0.5);
+    animation: dotPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+}
+
+/* ─── Bouton ON/OFF ─── */
+.powerBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: linear-gradient(180deg, #1a2128 0%, #0a0e14 100%);
+    border: 1px solid #2a323c;
+    border-radius: 8px;
+    color: #6b7885;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.powerBtn:hover {
+    border-color: #3a424c;
+    transform: translateY(-1px);
+}
+
+.powerBtn[data-on="true"] {
+    background: linear-gradient(180deg, #1a3a2a 0%, #0a1e14 100%);
+    border-color: #00ff88;
+    color: #00ff88;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.35), inset 0 0 12px rgba(0, 255, 136, 0.1);
+}
+
+.powerIcon {
+    position: relative;
+    display: block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    border-top-color: transparent;
+}
+
+.powerIcon::before {
+    content: "";
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 6px;
+    background: currentColor;
+    border-radius: 1px;
+}
+
+/* ─── Slider ─── */
+.sliderWrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sliderLabel {
+    font-size: 9px;
+    color: #6b7885;
+    letter-spacing: 2px;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+}
+
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(
+        90deg,
+        #7fd0ff 0%,
+        #7fd0ff var(--val, 50%),
+        #1a2128 var(--val, 50%),
+        #1a2128 100%
+    );
+    outline: none;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ffffff 0%, #7fd0ff 50%, #4da6ff 100%);
+    border: 2px solid #0a0e14;
+    box-shadow:
+        0 0 10px rgba(127, 208, 255, 0.8),
+        0 2px 6px rgba(0, 0, 0, 0.6);
+    cursor: grab;
+    transition: transform 0.15s ease;
+}
+
+.slider::-webkit-slider-thumb:active {
+    cursor: grabbing;
+    transform: scale(1.15);
+}
+
+.slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ffffff 0%, #7fd0ff 50%, #4da6ff 100%);
+    border: 2px solid #0a0e14;
+    box-shadow:
+        0 0 10px rgba(127, 208, 255, 0.8),
+        0 2px 6px rgba(0, 0, 0, 0.6);
+    cursor: grab;
+}
+
+.sliderMarks {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+    color: #4a5560;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+    padding: 0 2px;
+}
+
+/* ─── Presets ─── */
+.presets {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+}
+
+.presetBtn {
+    padding: 8px 4px;
+    background: #0a0e14;
+    border: 1px solid #2a323c;
+    border-radius: 6px;
+    color: #6b7885;
+    font-size: 8px;
+    letter-spacing: 1px;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+}
+
+.presetBtn:hover {
+    border-color: #4a5560;
+    color: #9aa9b8;
+}
+
+.presetBtn[data-active="true"] {
+    background: linear-gradient(180deg, #1a3a5c 0%, #0a1e2a 100%);
+    border-color: #7fd0ff;
+    color: #7fd0ff;
+    box-shadow: 0 0 12px rgba(127, 208, 255, 0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+    .wrap {
+        flex-direction: column;
+        gap: 30px;
+        padding: 24px;
+    }
+
+    .frame {
+        width: 220px;
+        height: 220px;
+    }
+
+    .hub { width: 48px; height: 48px; }
+    .hubCore { width: 18px; height: 18px; }
+
+    .panel {
+        width: 100%;
+        max-width: 360px;
+    }
+}

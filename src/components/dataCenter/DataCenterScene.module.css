@@ -1,0 +1,235 @@
+/* ============================================================
+   DATA CENTER SCENE
+   Fichier : DataCenterScene.module.css
+   ============================================================ */
+
+.scene {
+    --accent-blue:   #4da6ff;
+    --accent-green:  #00ff88;
+
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    overflow: visible;
+    z-index: 3;
+    pointer-events: none;
+    user-select: none;
+}
+
+.rack {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    opacity: 1;
+    transform-origin: center center;
+}
+
+.rackChassis {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        #1a2430 0%,
+        #0d1520 12%,
+        #0a1220 88%,
+        #050810 100%
+    );
+    border: 1px solid #2a3a4a;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    box-shadow:
+        0 25px 50px rgba(0, 0, 0, 0.9),
+        0 0 60px rgba(80, 150, 220, 0.18),
+        inset 0 1px 0 rgba(100, 180, 255, 0.12),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.9);
+}
+
+.rackTopBezel {
+    height: 34px;
+    background: linear-gradient(180deg, #1a2840 0%, #0d1520 100%);
+    border-bottom: 1px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 12px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.rackLogo {
+    width: 50px;
+    height: 4px;
+    background: var(--accent-blue);
+    border-radius: 2px;
+    opacity: 0.7;
+    box-shadow: 0 0 8px rgba(77, 166, 255, 0.6);
+}
+
+.rackBadge {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent-green);
+    box-shadow: 0 0 12px var(--accent-green);
+}
+
+.rackServers {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 6px 8px;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.server {
+    flex: 1;
+    background: linear-gradient(180deg, #182230 0%, #0a1220 100%);
+    border: 1px solid #1a2a3a;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5px;
+    position: relative;
+    min-height: 8px;
+}
+
+.serverVents {
+    flex: 1;
+    height: 4px;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent 0 3px,
+        rgba(50, 80, 100, 0.45) 3px 4px
+    );
+    border-radius: 1px;
+    margin-right: 5px;
+}
+
+.serverLeds {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+}
+
+.led {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    display: block;
+}
+
+.ledGreen {
+    background: var(--accent-green);
+    box-shadow: 0 0 5px var(--accent-green), 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.ledBlue {
+    background: var(--accent-blue);
+    box-shadow: 0 0 5px var(--accent-blue), 0 0 10px rgba(77, 166, 255, 0.5);
+}
+
+.rackBottomBezel {
+    height: 20px;
+    background: linear-gradient(180deg, #0a1220 0%, #050810 100%);
+    border-top: 1px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.rackVent {
+    width: 62%;
+    height: 4px;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent 0 4px,
+        rgba(50, 80, 100, 0.55) 4px 5px
+    );
+    border-radius: 1px;
+}
+
+.rackSideGlow {
+    position: absolute;
+    top: 20%;
+    bottom: 20%;
+    right: -16px;
+    width: 16px;
+    background: linear-gradient(90deg, rgba(100, 180, 255, 0.4), transparent);
+    filter: blur(8px);
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+/* 4 racks aux 4 coins — dimensions conservées */
+.dataCenter1 {
+    position: absolute;
+    inset: auto;
+    top: 12%;
+    left: 10%;
+    width: 20vw;
+    height: 33vh;
+    border-radius: 4px;
+    z-index: 3;
+}
+
+.dataCenter2 {
+    position: absolute;
+    inset: auto;
+    top: 12%;
+    right: 10%;
+    width: 20vw;
+    height: 33vh;
+    border-radius: 4px;
+    z-index: 3;
+}
+
+.dataCenter3 {
+    position: absolute;
+    inset: auto;
+    bottom: 8%;
+    left: 10%;
+    width: 20vw;
+    height: 33vh;
+    border-radius: 4px;
+    z-index: 3;
+}
+
+.dataCenter4 {
+    position: absolute;
+    inset: auto;
+    bottom: 8%;
+    right: 10%;
+    width: 20vw;
+    height: 33vh;
+    border-radius: 4px;
+    z-index: 3;
+}
+
+@media (max-width: 768px) {
+    .rackTopBezel { height: 26px; }
+    .rackBottomBezel { height: 16px; }
+    .led { width: 3px; height: 3px; }
+    .dataCenter1, .dataCenter2,
+    .dataCenter3, .dataCenter4 {
+        width: 28vw;
+        height: 28vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .rackTopBezel { height: 20px; }
+    .rackBottomBezel { height: 12px; }
+    .serverVents { height: 3px; }
+    .led { width: 2px; height: 2px; }
+    .dataCenter1, .dataCenter2,
+    .dataCenter3, .dataCenter4 {
+        width: 32vw;
+        height: 24vh;
+    }
+}

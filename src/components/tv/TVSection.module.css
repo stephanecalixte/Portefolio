@@ -1,0 +1,319 @@
+/* ============================================================
+   TV SECTION — Composant autonome
+   Fichier : TVSection.module.css
+   ============================================================ */
+
+/* ========== RESET LOCAL ========== */
+.tv-section *,
+.tv-section *::before,
+.tv-section *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ============================================================
+   SECTION TV
+   ============================================================ */
+.tv-section {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    padding: 100px 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 60px 40px;
+    justify-items: center;
+    align-items: start;
+    align-content: start;
+    background: radial-gradient(circle at 50% 50%, #0a0d10 0%, #030405 100%);
+    z-index: 1;
+    box-sizing: border-box;
+    isolation: isolate;
+    color: #e8edf2;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* ============================================================
+   TV CARD
+   ============================================================ */
+.tv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.tv-body {
+    width: 100%;
+    background: linear-gradient(180deg, #1a1d22 0%, #0e1013 100%);
+    border: 2px solid #2a2e33;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+}
+
+/* Vents du haut */
+.vents {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    padding-bottom: 6px;
+}
+
+.vents span {
+    display: block;
+    width: 14px;
+    height: 2px;
+    background: #2a2e33;
+    border-radius: 1px;
+}
+
+/* ============================================================
+   ÉCRAN
+   ============================================================ */
+.tv-screen {
+    background: radial-gradient(circle at 50% 30%, #0d1a24 0%, #05080b 100%);
+    border: 1px solid #1a1f24;
+    border-radius: 6px;
+    padding: 12px;
+    aspect-ratio: 16 / 10;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+.tv-statusbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 8px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    color: #6b7885;
+    flex-shrink: 0;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #2ecc40;
+    box-shadow: 0 0 6px #2ecc40;
+}
+
+.status-label {
+    color: #7fd0ff;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.status-ip {
+    margin-left: auto;
+    color: #6b7885;
+}
+
+.tv-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow: hidden;
+}
+
+.tv-content h3 {
+    font-size: 12px;
+    color: #7fd0ff;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+    font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.tv-content p {
+    font-size: 9px;
+    color: #9aa9b8;
+    line-height: 1.4;
+    font-family: 'Consolas', 'Courier New', monospace;
+    overflow: hidden;
+}
+
+.tv-cursor {
+    position: absolute;
+    bottom: 10px;
+    right: 12px;
+    color: #7fd0ff;
+    font-size: 10px;
+    animation: blinkCursor 1s step-end infinite;
+}
+
+@keyframes blinkCursor {
+    0%, 50%   { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.tv-flash {
+    position: absolute;
+    inset: 0;
+    background: #ffffff;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* ============================================================
+   CONTRÔLES
+   ============================================================ */
+.tv-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #2a2e33;
+}
+
+.power-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #2a2e33 0%, #14171b 100%);
+    border: 1px solid #3a3f45;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.power-btn:hover {
+    border-color: #2ecc40;
+    box-shadow: 0 0 10px rgba(46, 204, 64, 0.4);
+}
+
+.power-icon {
+    display: block;
+    width: 8px;
+    height: 8px;
+    border: 1.5px solid #2ecc40;
+    border-radius: 50%;
+    position: relative;
+    border-top-color: transparent;
+}
+
+.power-icon::before {
+    content: "";
+    position: absolute;
+    top: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1.5px;
+    height: 5px;
+    background: #2ecc40;
+}
+
+.led-group {
+    display: flex;
+    gap: 6px;
+}
+
+.led-green,
+.led-amber,
+.led-blue {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.led-green {
+    background: #2ecc40;
+    box-shadow: 0 0 5px #2ecc40;
+}
+
+.led-amber {
+    background: #ff9500;
+    box-shadow: 0 0 5px #ff9500;
+}
+
+.led-blue {
+    background: #1a73e8;
+    box-shadow: 0 0 5px #1a73e8;
+}
+
+.ports {
+    margin-left: auto;
+    display: flex;
+    gap: 3px;
+}
+
+.port {
+    display: block;
+    width: 12px;
+    height: 8px;
+    background: linear-gradient(180deg, #2c3036 0%, #14171a 100%);
+    border: 1px solid #05070a;
+    border-radius: 1px;
+}
+
+/* ============================================================
+   PIEDS
+   ============================================================ */
+.tv-legs {
+    display: flex;
+    gap: 60px;
+    justify-content: center;
+    margin-top: 0;
+}
+
+.tv-leg {
+    width: 8px;
+    height: 30px;
+    background: linear-gradient(180deg, #1a1d22 0%, #0e1013 100%);
+    border: 1px solid #2a2e33;
+    border-top: none;
+    border-radius: 0 0 3px 3px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+    .tv-section {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 50px 30px;
+        padding: 80px 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .tv-section {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 60px 16px;
+    }
+
+    .tv {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .tv-content h3 {
+        font-size: 10px;
+    }
+
+    .tv-content p {
+        font-size: 8px;
+    }
+}
