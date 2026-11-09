@@ -594,7 +594,7 @@ const Home = () => {
         .terminal-pre { scrollbar-width: none; -ms-overflow-style: none; }
       `}</style>
 
-      <button
+      {/* <button
         ref={hamburgerRef}
         className={styles.hamburger}
         type="button"
@@ -603,7 +603,7 @@ const Home = () => {
         aria-controls="nav-bar"
       >
         <span></span><span></span><span></span>
-      </button>
+      </button> */}
 
       {/* ═══════════════════════════════════════════════════════
           HERO
