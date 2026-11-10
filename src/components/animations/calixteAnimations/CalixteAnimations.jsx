@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import styles from "./CalixteAnimations.module.css";
-
-const LINE1 = "CALIXTE";
-const LINE2 = "STEPHANE";
+import { getSkills } from "../../../api";
+import EXPERIENCES from "../../../data/experiences";
+import ROLES from "../../../data/roles";
 
 // ─── 40 animations ───
-export const ANIMATIONS = [
+const ANIMATIONS = [
   "splitReveal3D", "elasticSnap", "gravityFall", "sliceSlide",
   "depthBlur", "perspectiveTilt", "kaleidoscope", "typewriter",
   "origami", "mirrorReflect", "waveMorph", "neonPulse",
@@ -88,8 +88,11 @@ function shuffle(arr) {
 }
 
 export default function CalixteAnimations() {
+  const [skills, setSkills] = useState([]);
+  const [skillsError, setSkillsError] = useState("");
   const [currentOrder, setCurrentOrder] = useState(() => shuffle(ANIMATIONS));
   const [index, setIndex] = useState(0);
+  const [skillIndex, setSkillIndex] = useState(0);
   const [cycle, setCycle] = useState(0);
   const [font, setFont] = useState(() => FONTS[Math.floor(Math.random() * FONTS.length)]);
 
@@ -97,10 +100,41 @@ export default function CalixteAnimations() {
   const textRef = useRef(null);
 
   const currentAnim = currentOrder[index];
+  const skillItems = skills.flatMap(({ category, items }) =>
+    items.map(({ name }) => ({ category, name }))
+  );
+  const rotationItems = [
+    ...skillItems,
+    ...EXPERIENCES.map(({ year, title }) => ({
+      category: `EXPÉRIENCE · ${year}`,
+      name: title,
+    })),
+    ...ROLES.map(({ title }) => ({
+      category: "MÉTIER",
+      name: title,
+    })),
+  ];
+  const currentSkill = rotationItems[skillIndex] || {
+    category: skillsError ? "ERREUR" : "CHARGEMENT",
+    name: skillsError ? "BASE DE DONNÉES" : "COMPÉTENCES",
+  };
+
+  useEffect(() => {
+    const controller = new AbortController();
+    getSkills(controller.signal)
+      .then(setSkills)
+      .catch((error) => {
+        if (error.name !== "AbortError") setSkillsError(error.message);
+      });
+    return () => controller.abort();
+  }, []);
 
   // ─── Timer : changement d'animation + nouvelle police aléatoire ───
   useEffect(() => {
     const timer = setTimeout(() => {
+      if (rotationItems.length) {
+        setSkillIndex((i) => (i + 1) % rotationItems.length);
+      }
       setIndex((i) => {
         // Nouvelle police à chaque étape
         setFont(FONTS[Math.floor(Math.random() * FONTS.length)]);
@@ -114,7 +148,7 @@ export default function CalixteAnimations() {
       });
     }, DURATION);
     return () => clearTimeout(timer);
-  }, [index, currentOrder]);
+  }, [index, currentOrder, rotationItems.length]);
 
   // ─── Magnetic cursor (GSAP) ───
   useEffect(() => {
@@ -160,7 +194,7 @@ export default function CalixteAnimations() {
       target.removeEventListener("mouseleave", leave);
       gsap.killTweensOf(chars);
     };
-  }, [currentAnim, index]);
+  }, [currentAnim, index, skillIndex]);
 
   // ─── Scramble (texte brouillé) ───
   useEffect(() => {
@@ -191,7 +225,7 @@ export default function CalixteAnimations() {
       clearInterval(interval);
       spans.forEach((s) => (s.textContent = s.dataset.original));
     };
-  }, [currentAnim, index]);
+  }, [currentAnim, index, skillIndex]);
 
   // ─── Rendu des lettres ───
   const renderLine = (text, offset, lineKey) => (
@@ -201,9 +235,9 @@ export default function CalixteAnimations() {
           key={`${lineKey}-${i}`}
           className={styles.char}
           style={{ "--i": String(i + offset) }}
-          data-original={char}
+          data-original={char === " " ? "\u00A0" : char}
         >
-          {char}
+          {char === " " ? "\u00A0" : char}
         </span>
       ))}
     </div>
@@ -212,14 +246,18 @@ export default function CalixteAnimations() {
   return (
     <div className={styles.container} ref={containerRef}>
       <div
-        key={`${cycle}-${index}-${currentAnim}`}
+        key={`${cycle}-${index}-${currentAnim}-${skillIndex}`}
         ref={textRef}
         className={`${styles.calixteText} ${styles[`anim_${currentAnim}`]}`}
-        style={{ fontFamily: font }}
+        style={{
+          fontFamily: font,
+          fontSize: `clamp(1.4rem, ${Math.min(8, 68 / Math.max(currentSkill.category.length, currentSkill.name.length))}vw, 7.5rem)`,
+        }}
         data-anim={currentAnim}
+        aria-label={`${currentSkill.category} : ${currentSkill.name}`}
       >
-        {renderLine(LINE1, 0, "line1")}
-        {renderLine(LINE2, LINE1.length, "line2")}
+        {renderLine(currentSkill.category.toUpperCase(), 0, "line1")}
+        {renderLine(currentSkill.name.toUpperCase(), currentSkill.category.length, "line2")}
       </div>
 
       {/* Indicateur (optionnel) */}
@@ -227,6 +265,7 @@ export default function CalixteAnimations() {
         <span className={styles.animName}>{currentAnim}</span>
         <span className={styles.counter}>{index + 1} / {currentOrder.length}</span>
         <span className={styles.cycle}>Cycle {cycle + 1}</span>
+        {skillsError && <span role="alert">{skillsError}</span>}
       </div>
     </div>
   );

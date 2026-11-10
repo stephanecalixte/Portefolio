@@ -2,19 +2,17 @@ import { forwardRef, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./TVSection.module.css";
+import ROLES from "../../data/roles";
 
 gsap.registerPlugin(ScrollTrigger);
 
 // ═══════════════════════════════════════════════════════════════════
 // DONNÉES DES TVs
 // ═══════════════════════════════════════════════════════════════════
-const DEFAULT_TVS = [
-  { titre: "Développeur Web", desc: "Compétences en développement web et administration d'infrastructures sécurisées." },
-  { titre: "Concepteur développeur d'applications", desc: "Compétences en conception et développement d'applications sécurisées." },
-  { titre: "DevOps", desc: "Compétences en DevOps et automatisation." },
-  { titre: "Administrateur réseau", desc: "Compétences en administration de réseaux." },
-  { titre: "Ingénieur du son", desc: "Compétences en ingénierie du son et production musicale." },
-];
+const DEFAULT_TVS = ROLES.map(({ title, description }) => ({
+  titre: title,
+  desc: description,
+}));
 
 const TVSection = forwardRef(function TVSection(
   { tvs = DEFAULT_TVS, id = "projets", className = "" },

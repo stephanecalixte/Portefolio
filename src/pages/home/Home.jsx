@@ -3,19 +3,19 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./Home.module.css";
 import { Link } from "react-router-dom";
-import hero from "./assets/hero.png";
-import viteLogo from "./assets/vite.svg";
-import dataCenter from "./assets/OIP.webp";
-import start from "./assets/videos/Start.mp4";
-import intro from "./assets/videos/intro.mp4";
+import hero from "../../assets/hero.png";
+import viteLogo from "../../assets/vite.svg";
+import dataCenter from "../../assets/OIP.webp";
+import start from "../../assets/videos/Start.mp4";
+import intro from "../../assets/videos/intro.mp4";
 
-import MellanoxSwitch from "./components/switch/MellanoxSwitch";
-import RouterSisco from "./components/router/RouterSisco";
-import CalixteAnimations from "./components/animations/calixteAnimations/CalixteAnimations";
-import DataCenter from "./components/dataCenter/DataCenterScene";
-import dataCenterStyles from "./components/dataCenter/DataCenterScene.module.css";
-import FanController from "./components/fancontroller/FanController";
-import TVSection from "./components/tv/TVSection";
+import MellanoxSwitch from "../../components/switch/MellanoxSwitch";
+import RouterSisco from "../../components/router/RouterSisco";
+import CalixteAnimations from "../../components/animations/calixteAnimations/CalixteAnimations";
+import DataCenter from "../../components/dataCenter/DataCenterScene";
+import dataCenterStyles from "../../components/dataCenter/DataCenterScene.module.css";
+import FanController from "../../components/fancontroller/FanController";
+import TVSection from "../../components/tv/TVSection";
 
 gsap.registerPlugin(ScrollTrigger);
 

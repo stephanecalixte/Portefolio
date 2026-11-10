@@ -752,7 +752,183 @@
     gap: 14px;
 }
 
+.hero {
+    height: auto;
+    min-height: 100vh;
+    padding: 72px 24px 190px;
+}
+
+.skillsShowcase {
+    position: relative;
+    z-index: 3;
+    width: min(1120px, 100%);
+    margin: auto;
+    animation: skillsEnter 800ms ease both;
+}
+
+.skillsEyebrow {
+    margin: 0 0 10px;
+    color: #9ac8ff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-align: center;
+}
+
+.hero .skillsTitle {
+    margin: 0 0 28px;
+    color: #f5f8fb;
+    font-family: "Arial Black", "Segoe UI", sans-serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    letter-spacing: -1px;
+    line-height: 1.1;
+    text-align: center;
+    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
+    mix-blend-mode: normal;
+}
+
+.skillsTables {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.skillCard {
+    min-width: 0;
+    padding: 18px 20px 14px;
+    border: 1px solid color-mix(in srgb, var(--skill-color) 28%, transparent);
+    border-radius: 12px;
+    background: rgba(8, 13, 19, 0.82);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(12px);
+}
+
+.skillCategory {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0 0 10px;
+    color: var(--skill-color);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.skillCategory > span {
+    font-size: 16px;
+}
+
+.skillTable {
+    width: 100%;
+    border-collapse: collapse;
+    color: #e8edf2;
+    font-size: 11px;
+    line-height: 1.35;
+    text-align: left;
+}
+
+.skillTable thead {
+    color: #8392a1;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.skillTable thead th {
+    padding: 0 0 7px;
+    font-weight: 600;
+}
+
+.skillTable thead th:last-child {
+    width: 112px;
+    text-align: right;
+}
+
+.skillTable tbody tr + tr {
+    border-top: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.skillTable tbody th {
+    padding: 7px 10px 7px 0;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+}
+
+.skillTable tbody td {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 7px 0;
+}
+
+.skillLevel {
+    width: 54px;
+    height: 4px;
+    overflow: hidden;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.13);
+}
+
+.skillBar {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--skill-color);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--skill-color) 55%, transparent);
+    animation: skillFill 900ms ease both;
+    transform-origin: left;
+}
+
+.skillPercent {
+    width: 30px;
+    color: #a9b5c0;
+    font-family: "Courier New", monospace;
+    font-size: 10px;
+    text-align: right;
+}
+
+@keyframes skillsEnter {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes skillFill {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
 @media (max-width: 600px) {
+    .hero {
+        padding: 92px 14px 170px;
+    }
+
+    .skillsEyebrow {
+        font-size: 8px;
+        letter-spacing: 2px;
+    }
+
+    .hero .skillsTitle {
+        margin-bottom: 20px;
+    }
+
+    .skillsTables {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .skillCard {
+        padding: 15px 16px 11px;
+    }
+
+    .skillTable {
+        font-size: 10px;
+    }
+
+    .skillTable thead th:last-child {
+        width: 100px;
+    }
+
     .heroCta {
         bottom: 80px;
     }

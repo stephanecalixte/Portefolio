@@ -1,99 +1,16 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./About.module.css";
+import { getSkills } from "../../api";
+import EXPERIENCES from "../../data/experiences";
 
 gsap.registerPlugin(ScrollTrigger);
 
 // ═══════════════════════════════════════════════════════════════════
 // DONNÉES
 // ═══════════════════════════════════════════════════════════════════
-const SKILLS = [
-  {
-    category: "Réseau",
-    icon: "◈",
-    color: "#4da6ff",
-    items: [
-      { name: "Cisco IOS / IOS XR", level: 90 },
-      { name: "Configuration switch / routeur", level: 95 },
-      { name: "VLAN, STP, OSPF, BGP", level: 85 },
-      { name: "Firewall FortiGate", level: 80 },
-      { name: "Mellanox / NVIDIA Networking", level: 75 },
-    ],
-  },
-  {
-    category: "Web / Dev",
-    icon: "◉",
-    color: "#7fd0ff",
-    items: [
-      { name: "React / Next.js", level: 90 },
-      { name: "JavaScript / TypeScript", level: 85 },
-      { name: "HTML / CSS avancé", level: 95 },
-      { name: "Node.js / Express", level: 80 },
-      { name: "GSAP / Animations", level: 85 },
-    ],
-  },
-  {
-    category: "DevOps",
-    icon: "◈",
-    color: "#ff9500",
-    items: [
-      { name: "Docker / Kubernetes", level: 80 },
-      { name: "GitLab CI / GitHub Actions", level: 85 },
-      { name: "Linux / Bash", level: 90 },
-      { name: "Monitoring (Prometheus, Grafana)", level: 75 },
-      { name: "Git / Versioning", level: 95 },
-    ],
-  },
-  {
-    category: "Sécurité",
-    icon: "◉",
-    color: "#00ff88",
-    items: [
-      { name: "Audit / Pentest réseaux", level: 75 },
-      { name: "Cryptographie / VPN", level: 80 },
-      { name: "SSH / Certificats", level: 85 },
-      { name: "Politique de sécurité", level: 80 },
-    ],
-  },
-];
-
-const TIMELINE = [
-  {
-    year: "2025",
-    title: "Concepteur Développeur d'Applications",
-    place: "Portfolio & projets web",
-    desc: "Développement du portfolio cinématique, du simulateur data center et de composants React avancés. Spécialisation en animations GSAP et scènes 3D en CSS.",
-    icon: "◉",
-    color: "#7fd0ff",
-  },
-  {
-    year: "2024",
-    title: "DevOps & Infrastructure",
-    place: "Pipelines CI/CD, Kubernetes",
-    desc: "Mise en place de chaînes de déploiement automatisées, monitoring Prometheus/Grafana, orchestration de containers sur clusters Kubernetes.",
-    icon: "◈",
-    color: "#ff9500",
-  },
-  {
-    year: "2023",
-    title: "Administrateur Réseau",
-    place: "Cisco, Fortinet, Mellanox",
-    desc: "Configuration de routeurs Cisco N540, switches Mellanox MCS7520, pare-feux FortiGate 121G. Déploiement de VLANs, routage OSPF/BGP et sécurité réseau.",
-    icon: "◈",
-    color: "#4da6ff",
-  },
-  {
-    year: "2022",
-    title: "Ingénieur du Son",
-    place: "Production musicale & live",
-    desc: "Production audio, mixage live, setup de système de retours IEM. Exploration des ponts entre le son et l'informatique temps réel.",
-    icon: "◉",
-    color: "#ff6b9d",
-  },
-];
-
 const VALUES = [
   {
     icon: "◈",
@@ -121,11 +38,23 @@ const VALUES = [
 // COMPOSANT
 // ═══════════════════════════════════════════════════════════════════
 export default function About() {
+  const [skills, setSkills] = useState([]);
+  const [skillsError, setSkillsError] = useState("");
   const heroRef = useRef(null);
   const bioRef = useRef(null);
   const skillsRef = useRef(null);
   const timelineRef = useRef(null);
   const valuesRef = useRef(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    getSkills(controller.signal)
+      .then(setSkills)
+      .catch((error) => {
+        if (error.name !== "AbortError") setSkillsError(error.message);
+      });
+    return () => controller.abort();
+  }, []);
 
   // Animation hero
   useEffect(() => {
@@ -170,7 +99,7 @@ export default function About() {
     });
 
     return () => ctx.revert();
-  }, []);
+  }, [skills]);
 
   // Animation timeline items
   useEffect(() => {
@@ -321,7 +250,8 @@ export default function About() {
         </div>
 
         <div className={styles.skillsGrid}>
-          {SKILLS.map((group) => (
+          {skillsError && <p role="alert">{skillsError}</p>}
+          {skills.map((group) => (
             <div key={group.category} className={styles.skillCard} style={{ "--accent": group.color }}>
               <div className={styles.skillHeader}>
                 <span className={styles.skillIcon}>{group.icon}</span>
@@ -357,7 +287,7 @@ export default function About() {
         </div>
 
         <div className={styles.timeline}>
-          {TIMELINE.map((item, i) => (
+          {EXPERIENCES.map((item, i) => (
             <div
               key={i}
               className={styles.timelineItem}

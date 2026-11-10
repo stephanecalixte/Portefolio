@@ -1,19 +1,37 @@
-# React + Vite
+# Portfolio Calixte
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Portfolio React/Vite avec une API Express et une base MySQL.
 
-Currently, two official plugins are available:
+## Configuration MySQL
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1. Créez une base de données MySQL vide en `utf8mb4`.
+2. Copiez `.env.example` vers `.env`, puis renseignez les paramètres MySQL.
+3. Créez les tables et chargez les données initiales avec le client MySQL :
 
-## React Compiler
+   ```powershell
+   Get-Content .\sql\schema.sql | mysql -h localhost -u your_mysql_user -p your_database_name
+   ```
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+   Vous pouvez aussi exécuter [schema.sql](./sql/schema.sql) dans MySQL Workbench après avoir sélectionné la base.
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+Le script crée les tables `projects`, `skill_categories`, `skills` et `contact_messages`. Les projets et compétences initiaux sont inclus; les insertions peuvent être relancées sans dupliquer les entrées.
 
-## Expanding the ESLint configuration
+Les messages de contact sont soumis à une durée de conservation de 12 mois. L’API supprime les messages expirés à son démarrage puis toutes les 24 heures. La notice de confidentialité est disponible à `/privacy`; avant toute mise en production, actualisez-la si l’identité, l’adresse de contact, l’hébergeur, la localisation de la base ou les traitements changent. La base locale de développement ne constitue pas un hébergement de production sécurisé : configurez notamment un hébergement approprié et HTTPS avant de collecter de vrais messages.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Démarrage local
+
+Dans un premier terminal, démarrez l’API :
+
+```sh
+npm run dev:api
+```
+
+Dans un second terminal, démarrez Vite :
+
+```sh
+npm run dev
+```
+
+Vite transmet les requêtes `/api` à Express sur le port `3000`. L’API propose `GET /api/health`, `GET /api/projects`, `GET /api/skills` et `POST /api/contact`. Les messages du formulaire sont enregistrés en base; la limitation de fréquence est appliquée par adresse IP.
+
+Pour vérifier la version de production : `npm run build`.

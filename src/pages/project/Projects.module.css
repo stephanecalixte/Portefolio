@@ -269,6 +269,17 @@
     gap: 30px;
 }
 
+.dataState,
+.dataError {
+    grid-column: 1 / -1;
+    color: #9aa9b8;
+    text-align: center;
+}
+
+.dataError {
+    color: #ff9a9a;
+}
+
 .project-card {
     position: relative;
     display: flex;

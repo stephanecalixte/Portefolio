@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import animStyles from "../animations/calixteAnimations/CalixteAnimations.module.css";
-import styles from "./Navbar.module.css";
+import styles from "./NavBar.module.css";
 
 const ANIMATIONS = [
   "splitReveal3D", "elasticSnap", "gravityFall", "sliceSlide",
@@ -20,7 +20,9 @@ const MAIN_LINKS = [
   { to: "/", label: "Accueil" },
   { to: "/projects", label: "Mes Projets" },
   { to: "/about", label: "A propos" },
+
 ];
+const Contact={to:"/contact",label:"Contact"}
 
 const SOCIAL_LINKS = [
   { href: "https://linkedin.com", label: "LinkedIn" },
@@ -53,10 +55,20 @@ export default function Navbar() {
 
   // Cycle des animations — 1 tick toutes les 2.5s
   const [tick, setTick] = useState(0);
+  const [hamburgerShape, setHamburgerShape] = useState(0);
 
   useEffect(() => {
     const t = setInterval(() => setTick((v) => v + 1), 2500);
     return () => clearInterval(t);
+  }, []);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const shapeTimer = setInterval(() => {
+      setHamburgerShape((shape) => (shape + 1) % 7);
+    }, 120000);
+    return () => clearInterval(shapeTimer);
   }, []);
 
   // Toggle menu — EXACTEMENT comme l'original
@@ -67,7 +79,9 @@ export default function Navbar() {
 
     const click = () => {
       const open = n.classList.toggle(styles.navBarOpen);
+      h.classList.toggle(styles.hamburgerOpen, open);
       h.setAttribute("aria-expanded", String(open));
+      h.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
     };
 
     h.setAttribute("aria-expanded", "false");
@@ -80,7 +94,11 @@ export default function Navbar() {
     const h = hamburgerRef.current;
     const n = navBarRef.current;
     if (n) n.classList.remove(styles.navBarOpen);
-    if (h) h.setAttribute("aria-expanded", "false");
+    if (h) {
+      h.classList.remove(styles.hamburgerOpen);
+      h.setAttribute("aria-expanded", "false");
+      h.setAttribute("aria-label", "Ouvrir le menu");
+    }
   };
 
   // Chaque élément reçoit une animation DIFFÉRENTE, qui change toutes les 2.5s
@@ -96,7 +114,7 @@ export default function Navbar() {
     <>
       <button
         ref={hamburgerRef}
-        className={styles.hamburger}
+        className={`${styles.hamburger} ${hamburgerShape ? styles[`hamburgerShape${hamburgerShape}`] : ""}`}
         type="button"
         aria-label="Ouvrir le menu"
         aria-expanded="false"
@@ -151,13 +169,13 @@ export default function Navbar() {
         </div>
 
         {/* CTA */}
-        <a
-          href="mailto:contact@calixte-stephane.fr"
+        <Link
+          to={Contact.to}
           className={styles.ctaBtn}
           onClick={closeMenu}
         >
           <AnimatedText text="Pouvons-nous en parler ?" animation={getAnim(8)} offset={10} />
-        </a>
+        </Link>
       </nav>
     </>
   );
