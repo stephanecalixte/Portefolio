@@ -1,10 +1,7 @@
 import { forwardRef, useEffect, useRef } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./TVSection.module.css";
 import ROLES from "../../data/roles";
-
-gsap.registerPlugin(ScrollTrigger);
 
 // ═══════════════════════════════════════════════════════════════════
 // DONNÉES DES TVs
@@ -13,6 +10,72 @@ const DEFAULT_TVS = ROLES.map(({ title, description }) => ({
   titre: title,
   desc: description,
 }));
+
+function setPowerState(tv, isOn, animated = true) {
+  const screen = tv.querySelector(`.${styles["tv-screen"]}`);
+  const content = tv.querySelector(`.${styles["tv-content"]}`);
+  const statusBar = tv.querySelector(`.${styles["tv-statusbar"]}`);
+  const cursor = tv.querySelector(`.${styles["tv-cursor"]}`);
+  const flash = tv.querySelector(`.${styles["tv-flash"]}`);
+  const letters = content?.querySelectorAll(`.${styles["tv-letter"]}`) ?? [];
+  const leds = tv.querySelectorAll(`.${styles["led-green"]}, .${styles["led-amber"]}, .${styles["led-blue"]}`);
+  const powerButton = tv.querySelector(`.${styles["power-btn"]}`);
+  if (!screen || !content || !statusBar || !cursor || !flash || !powerButton) return;
+
+  const targets = [screen, content, statusBar, cursor, flash, ...letters, ...leds];
+  gsap.killTweensOf(targets);
+  tv.dataset.power = isOn ? "on" : "off";
+  powerButton.setAttribute("aria-pressed", String(isOn));
+  powerButton.setAttribute(
+    "aria-label",
+    isOn ? "Éteindre le téléviseur" : "Allumer le téléviseur",
+  );
+
+  if (!animated || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    gsap.set(screen, { filter: isOn ? "brightness(1.1) grayscale(0)" : "brightness(0.12) grayscale(1)" });
+    gsap.set([content, statusBar], { autoAlpha: isOn ? 1 : 0.18, y: 0 });
+    gsap.set(letters, { autoAlpha: isOn ? 1 : 0 });
+    gsap.set(cursor, { autoAlpha: isOn ? 1 : 0 });
+    gsap.set(flash, { autoAlpha: 0 });
+    gsap.set(leds, { autoAlpha: isOn ? 1 : 0.2 });
+    return;
+  }
+
+  const timeline = gsap.timeline();
+  if (isOn) {
+    gsap.set(flash, { opacity: 0 });
+    gsap.set([content, statusBar], { y: 8 });
+    gsap.set(cursor, { autoAlpha: 0 });
+    timeline
+      .to(screen, { filter: "brightness(1.1) grayscale(0)", duration: 0.42, ease: "power2.out" })
+      .to(flash, { opacity: 0.72, duration: 0.055, ease: "none" }, 0)
+      .to(flash, { opacity: 0, duration: 0.38, ease: "power2.out" }, 0.055)
+      .to([content, statusBar], { autoAlpha: 1, y: 0, duration: 0.38, stagger: 0.06, ease: "power3.out" }, 0.16)
+      .fromTo(
+        letters,
+        { autoAlpha: 0, y: 3, filter: "blur(2px)" },
+        {
+          autoAlpha: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 0.12,
+          stagger: 0.018,
+          ease: "power1.out",
+        },
+        0.38,
+      )
+      .to(leds, { autoAlpha: 1, duration: 0.22, stagger: 0.055, ease: "power1.out" }, 0.2)
+      .to(cursor, { autoAlpha: 1, duration: 0.16 }, 0.55);
+  } else {
+    timeline
+      .to(letters, { autoAlpha: 0, duration: 0.06, stagger: { each: 0.004, from: "end" }, ease: "none" }, 0)
+      .to([content, statusBar, cursor], { autoAlpha: 0.18, y: 2, duration: 0.16, stagger: 0.025, ease: "power1.in" })
+      .to(screen, { filter: "brightness(0.12) grayscale(1)", duration: 0.38, ease: "power2.in" }, "-=0.05")
+      .to(leds, { autoAlpha: 0.2, duration: 0.18, stagger: 0.035 }, 0)
+      .to(flash, { opacity: 0.35, duration: 0.045, ease: "none" }, 0)
+      .to(flash, { opacity: 0, duration: 0.2, ease: "power2.out" }, 0.045);
+  }
+}
 
 const TVSection = forwardRef(function TVSection(
   { tvs = DEFAULT_TVS, id = "projets", className = "" },
@@ -35,49 +98,27 @@ const TVSection = forwardRef(function TVSection(
     const section = localRef.current;
     if (!section) return;
 
-    let ctx;
-    const rafId = requestAnimationFrame(() => {
-      ctx = gsap.context(() => {
-        const screens = section.querySelectorAll(`.${styles["tv-screen"]}`);
-        const flashes = section.querySelectorAll(`.${styles["tv-flash"]}`);
+    const tvs = section.querySelectorAll(`.${styles.tv}`);
+    tvs.forEach((tv) => setPowerState(tv, false, false));
 
-        if (!screens.length) return;
+    if (!("IntersectionObserver" in window)) {
+      tvs.forEach((tv) => setPowerState(tv, true));
+      return;
+    }
 
-        gsap.set(screens, { opacity: 0 });
-        gsap.set(flashes, { opacity: 0 });
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: section,
-            start: "top 70%",
-            toggleActions: "play none none reverse",
-          },
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(({ isIntersecting, target }) => {
+          const tv = target.closest(`.${styles.tv}`);
+          if (tv) setPowerState(tv, isIntersecting);
         });
+      },
+      { threshold: 0.2, rootMargin: "0px 0px -8% 0px" }
+    );
 
-        screens.forEach((screen, i) => {
-          const flash = flashes[i];
-          const delay = i * 0.3;
+    tvs.forEach((tv) => observer.observe(tv));
 
-          tl.fromTo(
-            flash,
-            { opacity: 0 },
-            { opacity: 1, duration: 0.4, yoyo: true, repeat: 1 },
-            delay
-          );
-
-          tl.to(
-            screen,
-            { opacity: 1, duration: 0.3, ease: "power2.out" },
-            delay + 0.1
-          );
-        });
-      });
-    });
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      if (ctx) ctx.revert();
-    };
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -97,8 +138,15 @@ const TVSection = forwardRef(function TVSection(
 // TV CARD — un seul écran
 // ═══════════════════════════════════════════════════════════════════
 function TVCard({ item, index }) {
+  const renderLetters = (text) =>
+    Array.from(text, (letter, letterIndex) => (
+      <span className={styles["tv-letter"]} aria-hidden="true" key={`${letter}-${letterIndex}`}>
+        {letter}
+      </span>
+    ));
+
   return (
-    <div className={styles.tv}>
+    <div className={styles.tv} data-power="off">
       <div className={styles["tv-body"]}>
         <div className={styles.vents}>
           {Array.from({ length: 10 }).map((_, j) => (
@@ -114,8 +162,8 @@ function TVCard({ item, index }) {
           </div>
 
           <div className={styles["tv-content"]}>
-            <h3>{item.titre}</h3>
-            <p>{item.desc}</p>
+            <h3 aria-label={item.titre}>{renderLetters(item.titre)}</h3>
+            <p aria-label={item.desc}>{renderLetters(item.desc)}</p>
           </div>
 
           <div className={styles["tv-cursor"]}>▊</div>
@@ -126,7 +174,12 @@ function TVCard({ item, index }) {
           <button
             className={styles["power-btn"]}
             type="button"
-            aria-label="Power"
+            aria-label="Allumer le téléviseur"
+            aria-pressed="false"
+            onClick={(event) => {
+              const tv = event.currentTarget.closest(`.${styles.tv}`);
+              if (tv) setPowerState(tv, tv.dataset.power !== "on");
+            }}
           >
             <span className={styles["power-icon"]} />
           </button>

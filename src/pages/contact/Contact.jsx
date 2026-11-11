@@ -94,6 +94,7 @@ export default function Contact() {
                 <label htmlFor="contact-name">Votre nom *</label>
                 <input
                   autoComplete="name"
+                  required
                   id="contact-name"
                   placeholder="Jean Dupont"
                   maxLength={120}
@@ -114,6 +115,7 @@ export default function Contact() {
                 <label htmlFor="contact-email">Votre e-mail *</label>
                 <input
                   autoComplete="email"
+                  required
                   id="contact-email"
                   placeholder="jean@exemple.fr"
                   maxLength={254}
@@ -138,6 +140,7 @@ export default function Contact() {
               <label htmlFor="contact-subject">Sujet *</label>
               <input
                 id="contact-subject"
+                required
                 placeholder="Comment puis-je vous aider ?"
                 maxLength={200}
                 aria-invalid={Boolean(errors.subject)}
@@ -158,6 +161,7 @@ export default function Contact() {
               <label htmlFor="contact-message">Votre message *</label>
               <textarea
                 id="contact-message"
+                required
                 placeholder="Parlez-moi de votre projet..."
                 maxLength={10000}
                 rows="5"
@@ -180,8 +184,9 @@ export default function Contact() {
               <span aria-hidden="true">↗</span>
             </button>
             <p className={styles.formHint}>
-              Vos informations seront utilisées uniquement pour répondre à votre demande
-              et supprimées au plus tard 12 mois après son envoi.{" "}
+              Vos informations servent uniquement à répondre à votre demande et sont
+              conservées au maximum 12 mois. Aucun consentement distinct n’est demandé
+              pour ce traitement.{" "}
               <Link to="/privacy">En savoir plus sur vos données personnelles</Link>.
             </p>
             <p

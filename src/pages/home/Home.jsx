@@ -3,11 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./Home.module.css";
 import { Link } from "react-router-dom";
-import hero from "../../assets/hero.png";
-import viteLogo from "../../assets/vite.svg";
-import dataCenter from "../../assets/OIP.webp";
-import start from "../../assets/videos/Start.mp4";
-import intro from "../../assets/videos/intro.mp4";
+import { getMediaCatalog } from "../../media";
 
 import MellanoxSwitch from "../../components/switch/MellanoxSwitch";
 import RouterSisco from "../../components/router/RouterSisco";
@@ -122,7 +118,6 @@ const P_VIDEO_START        = 0.89;
 const P_VIDEO_END          = 0.94;
 const P_LEDS_TRIGGER       = 0.94;
 
-const GALLERY = [hero, viteLogo, hero, dataCenter];
 const SKILLS = ["RÉSEAU", "SYSTÈME", "SÉCURITÉ", "CLOUD"];
 
 // ═══════════════════════════════════════════════════════════════════
@@ -203,16 +198,69 @@ const Home = () => {
   const [fanOn, setFanOn] = useState(false);
   const [fanSpeed, setFanSpeed] = useState(0);
   const fanWasOnRef = useRef(false);
+  const [mediaCatalog, setMediaCatalog] = useState({ images: [], videos: [] });
+  const [mediaError, setMediaError] = useState("");
+  const [mediaLoaded, setMediaLoaded] = useState(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    getMediaCatalog(controller.signal)
+      .then((catalog) => {
+        setMediaCatalog(catalog);
+        setMediaLoaded(true);
+      })
+      .catch((error) => {
+        if (error.name !== "AbortError") {
+          setMediaError(error.message);
+          setMediaLoaded(true);
+        }
+      });
+
+    return () => controller.abort();
+  }, []);
+
+  const heroVideoUrl = mediaCatalog.videos.find(
+    (item) => item.path.split("/").at(-1).toLowerCase() === "start.mp4",
+  )?.url;
+  const sceneVideoUrl = mediaCatalog.videos.find(
+    (item) => item.path.split("/").at(-1).toLowerCase() === "intro.mp4",
+  )?.url;
 
   // ─── Hero vidéo ───
   useEffect(() => {
     const heroVideo = heroVideoRef.current;
-    if (!heroVideo) return;
+    if (!heroVideo || !heroVideoUrl) return;
+
+    const seekVideo = (time, reason) => {
+      try {
+        heroVideo.currentTime = time;
+      } catch (error) {
+        console.error(`Impossible de repositionner la vidéo d’accueil (${reason}) :`, error);
+      }
+    };
 
     heroVideo.pause();
+    const fadeIn = gsap.matchMedia();
+    fadeIn.add("(prefers-reduced-motion: no-preference)", () => {
+      gsap.fromTo(
+        heroVideo,
+        { opacity: 0 },
+        {
+          opacity: 1,
+          delay: 3,
+          duration: 20,
+          ease: "power2.out",
+          overwrite: "auto",
+        },
+      );
+    });
+    fadeIn.add("(prefers-reduced-motion: reduce)", () => {
+      gsap.set(heroVideo, { opacity: 1 });
+    });
+
     const showFirstFrame = () => {
       if (heroVideo.readyState >= 2) {
-        try { heroVideo.currentTime = 0.01; } catch {}
+        seekVideo(0.01, "affichage de la première image");
       }
     };
     heroVideo.addEventListener("loadeddata", showFirstFrame);
@@ -224,10 +272,16 @@ const Home = () => {
       end: "bottom top",
       onUpdate: (self) => {
         if (self.progress > 0.02) {
-          if (heroVideo.paused) heroVideo.play().catch(() => {});
+          if (heroVideo.paused) {
+            heroVideo.play().catch((error) => {
+              if (error.name !== "AbortError") {
+                console.error("Impossible de lire la vidéo d’accueil :", error);
+              }
+            });
+          }
         } else if (!heroVideo.paused) {
           heroVideo.pause();
-          heroVideo.currentTime = 0;
+          seekVideo(0, "retour au début");
         }
       },
     });
@@ -235,8 +289,9 @@ const Home = () => {
     return () => {
       heroVideo.removeEventListener("loadeddata", showFirstFrame);
       st.kill();
+      fadeIn.revert();
     };
-  }, []);
+  }, [heroVideoUrl]);
 
   // ─── Hamburger ───
   useEffect(() => {
@@ -255,6 +310,8 @@ const Home = () => {
 
   // ─── Refresh ScrollTrigger après montage ───
   useEffect(() => {
+    if (!mediaLoaded) return undefined;
+
     const t1 = setTimeout(() => ScrollTrigger.refresh(), 100);
     const t2 = setTimeout(() => ScrollTrigger.refresh(), 400);
     const t3 = setTimeout(() => ScrollTrigger.refresh(), 1200);
@@ -270,10 +327,12 @@ const Home = () => {
       clearTimeout(t4);
       window.removeEventListener("resize", onResize);
     };
-  }, []);
+  }, [mediaLoaded]);
 
   // ─── Timeline scène unifiée ───
   useEffect(() => {
+    if (!mediaLoaded) return undefined;
+
     const scrollSection = scrollSectionRef.current;
     const svgWrapper = svgWrapperRef.current;
     const routerEl = routerRef.current;
@@ -451,7 +510,7 @@ const Home = () => {
       cancelAnimationFrame(rafId);
       if (ctx) ctx.revert();
     };
-  }, []);
+  }, [mediaLoaded]);
 
   // ─── Fan rotation ───
   useEffect(() => {
@@ -517,6 +576,8 @@ const Home = () => {
 
   // ─── Galeries verticale + horizontale ───
   useEffect(() => {
+    if (!mediaLoaded) return undefined;
+
     const ctx = gsap.context(() => {
       const verticalSection = verticalRef.current;
       if (verticalSection) {
@@ -561,7 +622,7 @@ const Home = () => {
       window.removeEventListener("load", refresh);
       ctx.revert();
     };
-  }, []);
+  }, [mediaLoaded]);
 
   // ─── Typing ───
   const routerCharCount =
@@ -592,17 +653,33 @@ const Home = () => {
         @keyframes blinkTerminalCursor { 50% { opacity: 0; } }
         .terminal-pre::-webkit-scrollbar { display: none; }
         .terminal-pre { scrollbar-width: none; -ms-overflow-style: none; }
-      `}</style>
+        `}</style>
 
 
 
       {/* ═══════════════════════════════════════════════════════
           HERO
-         ═══════════════════════════════════════════════════════ */}
+          ═══════════════════════════════════════════════════════ */}
       <section id="accueil" className={styles.hero}>
+        <div className={styles.name}>
+          {["Calixte", "Stéphane"].map((word) => (
+            <p className={styles.nameLine} key={word}>
+              {Array.from(word, (letter, index) => (
+                <span
+                  className={styles.nameLetter}
+                  key={`${word}-${index}`}
+                  style={{ "--letter-index": index }}
+                >
+                  {letter}
+                </span>
+              ))}
+            </p>
+          ))}
+        </div>
+
         <CalixteAnimations />
         <div className={styles.heroCta}>
-            <Link to="/projets" className={styles.projectsBtn}>
+            <Link to="/projects" className={styles.projectsBtn}>
               Voir mes projets
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
@@ -610,15 +687,29 @@ const Home = () => {
             </Link>
         </div>
         <div className={styles.backgroundVideoContainer}>
-          <video ref={heroVideoRef} loop muted playsInline preload="auto" className={styles.backgroundVideo}>
-            <source src={start} type="video/mp4" />
-          </video>
+          {heroVideoUrl && (
+            <video
+              ref={heroVideoRef}
+              src={heroVideoUrl}
+              loop
+              muted
+              playsInline
+              preload="auto"
+              className={styles.backgroundVideo}
+            />
+          )}
         </div>
         <div className={styles.scrollIndicator}>
           <span>Scroll down</span>
           <div className={styles.arrow}></div>
         </div>
       </section>
+
+      {mediaError && (
+        <p className={styles.mediaError} role="alert">
+          {mediaError}
+        </p>
+      )}
 
       {/* ═══════════════════════════════════════════════════════
           SCÈNE UNIFIÉE — SVG → Racks → Fan → Vidéo
@@ -630,9 +721,16 @@ const Home = () => {
       >
         {/* Vidéo en fond */}
         <div ref={videoStartRef} className={styles.videoOverlay}>
-          <video autoPlay loop muted playsInline className={styles.backgroundVideo}>
-            <source src={intro} type="video/mp4" />
-          </video>
+          {sceneVideoUrl && (
+            <video
+              src={sceneVideoUrl}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className={styles.backgroundVideo}
+            />
+          )}
         </div>
 
         {/* SVG scène */}
@@ -726,9 +824,9 @@ const Home = () => {
           GALERIE VERTICALE
          ═══════════════════════════════════════════════════════ */}
       <section className={styles["vertical-section"]} ref={verticalRef}>
-        {GALLERY.map((src, i) => (
-          <div key={i} className={styles.box}>
-            <img src={src} alt={`Visuel ${i + 1}`} />
+        {mediaCatalog.images.map((image) => (
+          <div key={image.path} className={styles.box}>
+            <img src={image.url} alt={image.name} loading="lazy" />
           </div>
         ))}
       </section>
@@ -737,9 +835,9 @@ const Home = () => {
           GALERIE HORIZONTALE
          ═══════════════════════════════════════════════════════ */}
       <section className={styles["horizontal-section"]} ref={horizontalRef}>
-        {GALLERY.map((src, i) => (
-          <div key={i} className={styles.box}>
-            <img src={src} alt={`Visuel ${i + 1}`} />
+        {mediaCatalog.images.map((image) => (
+          <div key={image.path} className={styles.box}>
+            <img src={image.url} alt={image.name} loading="lazy" />
           </div>
         ))}
       </section>

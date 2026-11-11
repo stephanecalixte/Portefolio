@@ -92,6 +92,50 @@
     position: relative;
     overflow: hidden;
     box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+    transition: box-shadow 500ms ease;
+}
+
+.tv[data-power="off"] .tv-screen {
+    filter: brightness(0.12) grayscale(1);
+}
+
+.tv[data-power="off"] .tv-content,
+.tv[data-power="off"] .tv-statusbar {
+    opacity: 0.18;
+}
+
+.tv[data-power="off"] .tv-cursor {
+    opacity: 0;
+}
+
+.tv[data-power="off"] .led-green,
+.tv[data-power="off"] .led-amber,
+.tv[data-power="off"] .led-blue {
+    opacity: 0.2;
+}
+
+.tv[data-power="off"] .power-icon {
+    border-color: #68717b;
+    border-top-color: transparent;
+}
+
+.tv[data-power="off"] .power-icon::before {
+    background: #68717b;
+}
+
+.tv[data-power="on"] .tv-screen {
+    box-shadow:
+        inset 0 0 22px rgba(77, 166, 255, 0.16),
+        0 0 24px rgba(77, 166, 255, 0.12);
+}
+
+.tv[data-power="on"] .power-icon {
+    border-color: #2ecc40;
+    border-top-color: transparent;
+}
+
+.tv[data-power="on"] .power-icon::before {
+    background: #2ecc40;
 }
 
 .tv-statusbar {
@@ -138,6 +182,7 @@
     letter-spacing: 0.5px;
     line-height: 1.2;
     font-family: 'Consolas', 'Courier New', monospace;
+    white-space: pre-wrap;
 }
 
 .tv-content p {
@@ -146,6 +191,11 @@
     line-height: 1.4;
     font-family: 'Consolas', 'Courier New', monospace;
     overflow: hidden;
+    white-space: pre-wrap;
+}
+
+.tv-letter {
+    display: inline-block;
 }
 
 .tv-cursor {
@@ -315,5 +365,15 @@
 
     .tv-content p {
         font-size: 8px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tv-screen {
+        transition: none;
+    }
+
+    .tv-cursor {
+        animation: none;
     }
 }

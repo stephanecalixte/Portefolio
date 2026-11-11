@@ -10,7 +10,7 @@ export default function Privacy() {
       <article className={styles.content}>
         <p className={styles.eyebrow}>INFORMATIONS LÉGALES</p>
         <h1>Confidentialité et données personnelles</h1>
-        <p className={styles.updated}>Dernière mise à jour : 10 novembre 2026</p>
+        <p className={styles.updated}>Dernière mise à jour : 11 novembre 2026</p>
 
         <section>
           <h2>Responsable du traitement</h2>
@@ -39,8 +39,10 @@ export default function Privacy() {
           </p>
           <p>
             Les champs marqués comme obligatoires sont nécessaires pour pouvoir
-            traiter le message. Aucun profilage ni décision automatisée n’est
-            effectué.
+            traiter le message ; si vous ne les renseignez pas, le formulaire ne
+            pourra pas être envoyé. Aucun profilage ni décision automatisée n’est
+            effectué. Le traitement nécessaire à la réponse ne repose pas sur un
+            consentement : aucune case de consentement n’est donc requise.
           </p>
         </section>
 
@@ -48,17 +50,19 @@ export default function Privacy() {
           <h2>Destinataires et hébergement</h2>
           <p>
             Les messages sont enregistrés dans la base MySQL configurée pour le
-            portfolio et accessibles à son responsable. Pour la configuration
-            actuelle, cette base fonctionne localement. Si l’application ou la
-            base est hébergée par un prestataire, celui-ci pourra traiter les
-            données pour le compte du responsable ; cette notice devra alors
-            préciser le prestataire, le lieu d’hébergement et les garanties
-            applicables.
+            portfolio et accessibles à son responsable. Dans la configuration
+            locale de développement, la base fonctionne sur la machine qui
+            exécute le serveur. Avant toute mise en production avec un hébergeur
+            ou un prestataire de base de données, cette notice doit être mise à
+            jour pour identifier les destinataires, le lieu d’hébergement et,
+            le cas échéant, les garanties de transfert hors de l’Espace
+            économique européen.
           </p>
           <p>
-            Le formulaire ne déclenche pas l’envoi d’un e-mail. Aucune adresse IP
-            n’est enregistrée dans la base par le formulaire ; elle est utilisée
-            temporairement par le serveur pour limiter les envois répétés.
+            Le formulaire ne déclenche pas l’envoi d’un e-mail. L’adresse IP
+            n’est pas enregistrée dans la base ; le serveur la conserve
+            temporairement en mémoire, au maximum une minute, pour empêcher les
+            envois répétés, puis la supprime.
           </p>
         </section>
 

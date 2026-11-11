@@ -15,7 +15,7 @@ const VALUES = [
   {
     icon: "◈",
     title: "Précision technique",
-    desc: "Chaque configuration, chaque ligne de code est testée et documentée. Pas de place pour le hasard.",
+    desc: "Chaque fonctionnalité et chaque ligne de code sont testées et documentées.",
   },
   {
     icon: "◉",
@@ -25,12 +25,55 @@ const VALUES = [
   {
     icon: "◈",
     title: "Sécurité par défaut",
-    desc: "Toute infrastructure est pensée avec la sécurité comme fondation, jamais comme ajout.",
+    desc: "La sécurité est intégrée dès la conception, jamais ajoutée au dernier moment.",
   },
   {
     icon: "◉",
     title: "Apprentissage continu",
-    desc: "Nouvelles technologies, nouveaux protocoles, nouvelles pratiques : je reste en veille permanente.",
+    desc: "Nouvelles technologies et nouvelles pratiques : je reste en veille permanente.",
+  },
+];
+
+const PROCESS_PHASES = [
+  {
+    number: "01",
+    title: "Comprendre & concevoir",
+    description:
+      "Échanger avec le client, analyser les besoins et poser les bases d’une solution adaptée.",
+    steps: [
+      "Recueillir le besoin et les contraintes",
+      "Décrire les parcours et fonctionnalités",
+      "Maquetter des interfaces accessibles",
+      "Définir une architecture logicielle sécurisée",
+      "Modéliser les données",
+    ],
+    accent: "#7fd0ff",
+  },
+  {
+    number: "02",
+    title: "Développer & sécuriser",
+    description:
+      "Construire l’application par couches, de l’interface aux traitements et aux données.",
+    steps: [
+      "Préparer les outils de développement",
+      "Développer les interfaces utilisateur",
+      "Implémenter les composants métier",
+      "Créer les accès SQL et NoSQL",
+    ],
+    accent: "#a78bfa",
+  },
+  {
+    number: "03",
+    title: "Tester & améliorer",
+    description:
+      "Vérifier le résultat, documenter le travail et améliorer l’application en continu.",
+    steps: [
+      "Préparer et exécuter les tests",
+      "Vérifier l’accessibilité et la sécurité",
+      "Documenter les choix et les résultats",
+      "Corriger les anomalies et faire de la veille",
+    ],
+    accent: "#00ff88",
   },
 ];
 
@@ -40,16 +83,18 @@ const VALUES = [
 export default function About() {
   const [skills, setSkills] = useState([]);
   const [skillsError, setSkillsError] = useState("");
+  const pageRef = useRef(null);
   const heroRef = useRef(null);
   const bioRef = useRef(null);
   const skillsRef = useRef(null);
   const timelineRef = useRef(null);
   const valuesRef = useRef(null);
+  const processRef = useRef(null);
 
   useEffect(() => {
     const controller = new AbortController();
     getSkills(controller.signal)
-      .then(setSkills)
+      .then((groups) => setSkills(groups.filter((group) => group.category === "Web / Dev")))
       .catch((error) => {
         if (error.name !== "AbortError") setSkillsError(error.message);
       });
@@ -67,7 +112,7 @@ export default function About() {
         gsap.fromTo(tag, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: "power3.out", delay: 0.1 });
       }
       if (title) {
-        gsap.fromTo(title, { y: 80, opacity: 0, skewY: 5 }, { y: 0, opacity: 1, skewY: 0, duration: 1.2, ease: "power4.out", delay: 0.3 });
+        gsap.fromTo(title, { y: 80, opacity: 0 }, { y: 0, opacity: 1, duration: 1.2, ease: "power4.out", delay: 0.3 });
       }
       if (subtitle) {
         gsap.fromTo(subtitle, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power3.out", delay: 0.6 });
@@ -77,73 +122,312 @@ export default function About() {
     return () => ctx.revert();
   }, []);
 
-  // Animation skills bars au scroll
+  // Reveal éditorial des cartes et des textes au défilement.
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const bars = skillsRef.current?.querySelectorAll(`.${styles.skillBar}`);
-      if (bars?.length) {
-        bars.forEach((bar) => {
-          const level = parseInt(bar.dataset.level || "0", 10);
-          gsap.fromTo(
-            bar,
-            { width: "0%" },
-            {
-              width: `${level}%`,
-              duration: 1.4,
-              ease: "power3.out",
-              scrollTrigger: { trigger: bar, start: "top 85%", toggleActions: "play none none reverse" },
-            }
-          );
-        });
+    const root = pageRef.current;
+    if (!root) return undefined;
+
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      const heroContent = root.querySelector(`.${styles.heroContent}`);
+      if (heroContent && heroRef.current) {
+        gsap.fromTo(
+          heroContent,
+          { y: 0, autoAlpha: 1 },
+          {
+            y: -64,
+            autoAlpha: 0,
+            ease: "none",
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: "top top",
+              end: "bottom top",
+              scrub: 0.7,
+            },
+          },
+        );
       }
-    });
 
-    return () => ctx.revert();
-  }, [skills]);
+      const heroTitle = root.querySelector(`.${styles["hero-title"]}`);
+      if (heroTitle && heroRef.current) {
+        gsap.fromTo(
+          heroTitle,
+          { rotateX: 9, transformPerspective: 900, transformOrigin: "50% 50%" },
+          {
+            rotateX: 0,
+            transformPerspective: 900,
+            ease: "none",
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: "top top",
+              end: "bottom top",
+              scrub: 0.7,
+            },
+          },
+        );
+      }
 
-  // Animation timeline items
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const items = timelineRef.current?.querySelectorAll(`.${styles.timelineItem}`);
-      if (items?.length) {
-        gsap.set(items, { opacity: 0, x: -40 });
-        items.forEach((item) => {
-          gsap.to(item, {
-            opacity: 1,
+      const cardSelector = [
+        `.${styles.statItem}`,
+        `.${styles.bioAvatar}`,
+        `.${styles.bioMetaItem}`,
+        `.${styles.processCard}`,
+        `.${styles.skillCard}`,
+        `.${styles.timelineItem}`,
+        `.${styles.valueCard}`,
+        `.${styles.ctaButtons} > a`,
+      ].join(", ");
+
+      root.querySelectorAll(cardSelector).forEach((card, index) => {
+        const isProcessCard = card.classList.contains(styles.processCard);
+        gsap.fromTo(
+          card,
+          {
+            autoAlpha: 0,
+            ...(isProcessCard ? {} : { y: 54, x: index % 2 ? 14 : -14, scale: 0.97 }),
+            filter: "blur(7px)",
+          },
+          {
+            autoAlpha: 1,
+            ...(isProcessCard ? {} : { y: 0, x: 0, scale: 1 }),
+            filter: "blur(0px)",
+            duration: 1.1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 92%",
+              end: "top 78%",
+              scrub: 0.65,
+              invalidateOnRefresh: true,
+            },
+          },
+        );
+      });
+
+      const textSelector = [
+        `.${styles.statLabel}`,
+        `.${styles.bioLabel}`,
+        `.${styles.bioTitle}`,
+        `.${styles.bioText}`,
+        `.${styles.bioMetaLabel}`,
+        `.${styles.bioMetaValue}`,
+        `.${styles.processEyebrow}`,
+        `.${styles.processTitleText}`,
+        `.${styles.processLead}`,
+        `.${styles.processNumber}`,
+        `.${styles.processCardTitle}`,
+        `.${styles.processCardDescription}`,
+        `.${styles.processSteps} li`,
+        `.${styles.processFooter} > p`,
+        `.${styles.processLink}`,
+        `.${styles.sectionLabel}`,
+        `.${styles.sectionTitle}`,
+        `.${styles.skillCategory}`,
+        `.${styles.skillItem}`,
+        `.${styles.timelineHeader}`,
+        `.${styles.timelineTitle}`,
+        `.${styles.timelineDesc}`,
+        `.${styles.valueIcon}`,
+        `.${styles.valueTitle}`,
+        `.${styles.valueDesc}`,
+        `.${styles.cta} h2`,
+        `.${styles.cta} p`,
+        "[role='alert']",
+      ].join(", ");
+
+      root.querySelectorAll(textSelector).forEach((text, index) => {
+        const isHeading =
+          text.matches("h1, h2, h3") ||
+          text.classList.contains(styles.processTitleText);
+        gsap.fromTo(
+          text,
+          {
+            autoAlpha: 0,
+            y: 18,
+            x: index % 2 ? 5 : -5,
+            ...(isHeading ? { rotateX: index % 2 ? 7 : -7, transformPerspective: 900 } : {}),
+            filter: "blur(4px)",
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
             x: 0,
-            duration: 0.8,
+            ...(isHeading ? { rotateX: 0, transformPerspective: 900 } : {}),
+            filter: "blur(0px)",
+            duration: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: text,
+              start: "top 94%",
+              end: "top 72%",
+              scrub: 0.45,
+              invalidateOnRefresh: true,
+            },
+          },
+        );
+      });
+
+      const bars = skillsRef.current?.querySelectorAll(`.${styles.skillBar}`);
+      bars?.forEach((bar) => {
+        const level = parseInt(bar.dataset.level || "0", 10);
+        gsap.fromTo(
+          bar,
+          { width: "0%" },
+          {
+            width: `${level}%`,
+            duration: 1.2,
             ease: "power3.out",
-            scrollTrigger: { trigger: item, start: "top 82%", toggleActions: "play none none reverse" },
-          });
-        });
-      }
+            scrollTrigger: {
+              trigger: bar,
+              start: "top 92%",
+              toggleActions: "play none none reverse",
+            },
+          },
+        );
+      });
     });
 
-    return () => ctx.revert();
-  }, []);
+    const refreshFrame = requestAnimationFrame(() => ScrollTrigger.refresh());
+    return () => {
+      cancelAnimationFrame(refreshFrame);
+      media.revert();
+    };
+  }, [skills, skillsError]);
 
-  // Animation values
+  // Les cartes échangent leurs positions dans une séquence liée au scroll.
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const cards = valuesRef.current?.querySelectorAll(`.${styles.valueCard}`);
-      if (cards?.length) {
-        gsap.set(cards, { opacity: 0, y: 40 });
-        gsap.to(cards, {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          stagger: 0.12,
-          ease: "power2.out",
-          scrollTrigger: { trigger: valuesRef.current, start: "top 75%", toggleActions: "play none none reverse" },
-        });
-      }
+    if (!processRef.current) return undefined;
+
+    const media = gsap.matchMedia();
+    media.add("(min-width: 900px) and (prefers-reduced-motion: no-preference)", () => {
+      const stage = processRef.current.querySelector(`.${styles.processPhases}`);
+      const cards = gsap.utils.toArray(
+        processRef.current.querySelectorAll(`.${styles.processCard}`),
+      );
+      if (!stage || cards.length !== 3) return;
+
+      const getOffsets = () => {
+        const slots = cards.map((card) => ({
+          x: card.offsetLeft + card.offsetWidth / 2,
+          y: card.offsetTop + card.offsetHeight / 2,
+        }));
+        return {
+          slots,
+          offsets: slots.map((slot) => ({
+            x: slot.x - slots[0].x,
+            y: slot.y - slots[0].y,
+          })),
+        };
+      };
+
+      gsap.set(cards, { transformOrigin: "50% 50%", zIndex: 1 });
+
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: stage,
+          start: "center center",
+          end: () => `+=${window.innerHeight * 1.25}`,
+          pin: true,
+          pinSpacing: true,
+          scrub: 1,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      const midpoint = (from, to, origin, axis) => {
+        const { offsets } = getOffsets();
+        const distance = (offsets[from][axis] + offsets[to][axis]) / 2 - offsets[origin][axis];
+        return axis === "y"
+          ? distance - Math.min(42, window.innerHeight * 0.055)
+          : distance;
+      };
+      const relativeOffset = (from, to, axis) => {
+        const { offsets } = getOffsets();
+        return offsets[to][axis] - offsets[from][axis];
+      };
+
+      timeline
+        .to(cards[0], {
+          x: () => midpoint(0, 1, 0, "x"),
+          y: () => midpoint(0, 1, 0, "y"),
+          rotation: 2,
+          scale: 1.035,
+          zIndex: 3,
+          duration: 0.5,
+          ease: "none",
+        }, 0)
+        .to(cards[1], {
+          x: () => midpoint(1, 0, 1, "x"),
+          y: () => midpoint(1, 0, 1, "y"),
+          rotation: -2,
+          scale: 0.985,
+          zIndex: 2,
+          duration: 0.5,
+          ease: "none",
+        }, 0)
+        .to(cards[0], {
+          x: () => getOffsets().offsets[1].x,
+          y: () => getOffsets().offsets[1].y,
+          rotation: 0,
+          scale: 1,
+          duration: 0.5,
+          ease: "none",
+        }, 0.5)
+        .to(cards[1], {
+          x: () => -getOffsets().offsets[1].x,
+          y: () => -getOffsets().offsets[1].y,
+          rotation: 0,
+          scale: 1,
+          zIndex: 1,
+          duration: 0.5,
+          ease: "none",
+        }, 0.5)
+        .to(cards[0], {
+          x: () => midpoint(1, 2, 0, "x"),
+          y: () => midpoint(1, 2, 0, "y"),
+          rotation: 2,
+          scale: 1.035,
+          zIndex: 3,
+          duration: 0.5,
+          ease: "none",
+        }, 1)
+        .to(cards[2], {
+          x: () => midpoint(2, 1, 2, "x"),
+          y: () => midpoint(2, 1, 2, "y"),
+          rotation: -2,
+          scale: 0.985,
+          zIndex: 2,
+          duration: 0.5,
+          ease: "none",
+        }, 1)
+        .to(cards[0], {
+          x: () => getOffsets().offsets[2].x,
+          y: () => getOffsets().offsets[2].y,
+          rotation: 0,
+          scale: 1,
+          zIndex: 1,
+          duration: 0.5,
+          ease: "none",
+        }, 1.5)
+        .to(cards[2], {
+          x: () => relativeOffset(2, 1, "x"),
+          y: () => relativeOffset(2, 1, "y"),
+          rotation: 0,
+          scale: 1,
+          zIndex: 2,
+          duration: 0.5,
+          ease: "none",
+        }, 1.5);
+
+      return () => timeline.scrollTrigger?.kill();
     });
 
-    return () => ctx.revert();
+    return () => media.revert();
   }, []);
 
   return (
-    <div className={styles.page}>
+    <div ref={pageRef} className={styles.page}>
 
       {/* ═══════════════════════════════════════════════════════
           HERO
@@ -163,13 +447,13 @@ export default function About() {
           </h1>
 
           <p className={styles["hero-subtitle"]}>
-            Ingénieur réseau, développeur web, DevOps et ingénieur du son.
-            Je construis des infrastructures fiables et des interfaces qui ont du caractère.
+            Développeur web, concepteur développeur d’applications et ingénieur du son.
+            Je crée des expériences numériques fiables, soignées et expressives.
           </p>
 
           <div className={styles.heroStats}>
             <div className={styles.statItem}>
-              <span className={styles.statValue}>4</span>
+              <span className={styles.statValue}>3</span>
               <span className={styles.statLabel}>Domaines</span>
             </div>
             <div className={styles.statItem}>
@@ -200,22 +484,20 @@ export default function About() {
           <div className={styles.bioContent}>
             <span className={styles.bioLabel}>BIOGRAPHIE</span>
             <h2 className={styles.bioTitle}>
-              Un parcours entre <span>infrastructure</span> et <span>création</span>
+              Un parcours entre <span>développement</span> et <span>création</span>
             </h2>
             <p className={styles.bioText}>
-              Mon parcours est né d'une double passion : comprendre comment les données circulent
-              (réseau, DevOps) et comment elles se racontent (web, design, son).
+              Mon parcours est né d’une double passion : concevoir des applications web
+              utiles et imaginer des expériences sonores et visuelles singulières.
             </p>
             <p className={styles.bioText}>
-              J'ai commencé par l'ingénierie du son, avant de plonger dans l'administration
-              réseau puis le développement web. Aujourd'hui, je conçois des architectures
-              complètes : de la configuration d'un routeur Cisco jusqu'aux animations qui
-              font vibrer une interface.
+              Après un premier parcours en ingénierie du son, je me suis orienté vers le
+              développement web et la conception d’applications. J’aime transformer une
+              idée en une interface claire, vivante et agréable à utiliser.
             </p>
             <p className={styles.bioText}>
-              Ce portfolio est un terrain d'expérimentation permanent. Chaque composant
-              reproduit fidèlement du matériel réel (routeurs, switchs, pare-feux),
-              chaque animation explore les limites du CSS et de GSAP.
+              Ce portfolio est un terrain d’expérimentation permanent : j’y explore la
+              création d’interfaces, les animations et les liens entre le design et le son.
             </p>
 
             <div className={styles.bioMeta}>
@@ -234,6 +516,80 @@ export default function About() {
                 <span className={styles.bioMetaValue}>FR · EN</span>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          DÉMARCHE DE CONCEPTION ET DE DÉVELOPPEMENT
+         ═══════════════════════════════════════════════════════ */}
+      <section
+        ref={processRef}
+        className={styles.processSection}
+        aria-labelledby="process-title"
+      >
+        <div className={styles.processAtmosphere} aria-hidden="true" />
+        <div className={styles.processInner}>
+          <header className={styles.processHeader}>
+            <span className={`${styles.processEyebrow} ${styles.processReveal}`}>
+              Ma démarche · du besoin à l’amélioration continue
+            </span>
+            <h2 id="process-title" className={styles.processTitle}>
+              <span className={styles.processTitleLine}>
+                <span className={styles.processTitleText}>Concevoir avec sens.</span>
+              </span>
+              <span className={styles.processTitleLine}>
+                <span className={styles.processTitleText}>
+                  Développer avec <span className={styles.processAccent}>exigence.</span>
+                </span>
+              </span>
+            </h2>
+            <p className={`${styles.processLead} ${styles.processReveal}`}>
+              Chaque projet avance par étapes : comprendre les personnes et leurs besoins,
+              concevoir une application accessible et sécurisée, puis la tester et
+              l’améliorer.
+            </p>
+          </header>
+
+          <div className={styles.processPhases}>
+            {PROCESS_PHASES.map((phase) => (
+              <article
+                key={phase.number}
+                className={styles.processCard}
+                style={{ "--process-accent": phase.accent }}
+              >
+                <div className={styles.processCardTop}>
+                  <span className={styles.processNumber}>{phase.number}</span>
+                  <span className={styles.processRule} aria-hidden="true" />
+                </div>
+                <h3 className={styles.processCardTitle}>{phase.title}</h3>
+                <p className={styles.processCardDescription}>{phase.description}</p>
+                <ol className={styles.processSteps}>
+                  {phase.steps.map((step) => <li key={step}>{step}</li>)}
+                </ol>
+              </article>
+            ))}
+          </div>
+
+          <div className={`${styles.processFooter} ${styles.processReveal}`}>
+            <p>
+              La sécurité, l’accessibilité, la confidentialité des données et la
+              collaboration accompagnent l’ensemble du parcours.
+            </p>
+            <Link to="/processPage" className={styles.processLink}>
+              Découvrir toutes les étapes
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </Link>
           </div>
         </div>
       </section>
@@ -287,25 +643,29 @@ export default function About() {
         </div>
 
         <div className={styles.timeline}>
-          {EXPERIENCES.map((item, i) => (
-            <div
-              key={i}
-              className={styles.timelineItem}
-              style={{ "--accent": item.color }}
-            >
-              <div className={styles.timelineDot}>
-                <span className={styles.timelineIcon}>{item.icon}</span>
-              </div>
-              <div className={styles.timelineContent}>
-                <div className={styles.timelineHeader}>
-                  <span className={styles.timelineYear}>{item.year}</span>
-                  <span className={styles.timelinePlace}>{item.place}</span>
+          {EXPERIENCES
+            .filter((item) =>
+              ["Concepteur Développeur d'Applications", "Ingénieur du Son"].includes(item.title),
+            )
+            .map((item) => (
+              <div
+                key={`${item.year}-${item.title}`}
+                className={styles.timelineItem}
+                style={{ "--accent": item.color }}
+              >
+                <div className={styles.timelineDot}>
+                  <span className={styles.timelineIcon}>{item.icon}</span>
                 </div>
-                <h3 className={styles.timelineTitle}>{item.title}</h3>
-                <p className={styles.timelineDesc}>{item.desc}</p>
+                <div className={styles.timelineContent}>
+                  <div className={styles.timelineHeader}>
+                    <span className={styles.timelineYear}>{item.year}</span>
+                    <span className={styles.timelinePlace}>{item.place}</span>
+                  </div>
+                  <h3 className={styles.timelineTitle}>{item.title}</h3>
+                  <p className={styles.timelineDesc}>{item.desc}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </section>
 
@@ -336,17 +696,17 @@ export default function About() {
          ═══════════════════════════════════════════════════════ */}
       <section className={styles.cta}>
         <h2>Travaillons ensemble</h2>
-        <p>Un projet réseau, web ou DevOps ? Discutons de ce que je peux apporter.</p>
+        <p>Un projet web, une application ou une création sonore ? Discutons-en.</p>
         <div className={styles.ctaButtons}>
-          <Link to="/projets" className={styles.ctaBtnPrimary}>
+          <Link to="/projects" className={styles.ctaBtnPrimary}>
             Voir mes projets
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </Link>
-          <a href="mailto:contact@calixte-stephane.fr" className={styles.ctaBtnSecondary}>
+          <Link to="/contact" className={styles.ctaBtnSecondary}>
             Me contacter
-          </a>
+          </Link>
         </div>
       </section>
     </div>
