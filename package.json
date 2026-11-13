@@ -8,6 +8,7 @@
     "dev:api": "node server/server.js",
     "dev:media": "node server/mediaServer.js",
     "dev": "vite",
+    "prebuild": "node scripts/sync-media.mjs",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
