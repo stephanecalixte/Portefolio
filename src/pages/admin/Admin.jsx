@@ -41,15 +41,28 @@ async function adminRequest(path, options = {}) {
     throw new Error("Impossible de joindre le serveur d’administration.", { cause: error });
   }
 
-  const result = response.status === 204 ? null : await response.json().catch(() => null);
+  const contentType = response.headers.get("content-type") || "";
+  const isJson = contentType.includes("application/json");
+  const result = response.status === 204
+    ? null
+    : isJson
+      ? await response.json().catch(() => null)
+      : null;
+
   if (!response.ok) {
-    const message = response.status === 404
-      ? "Le backend d’administration n’est pas déployé sur ce Worker."
-      : result?.error || "La requête a échoué.";
+    const message = result?.error || "La requête a échoué.";
     const error = new Error(message);
     error.status = response.status;
     throw error;
   }
+
+  // Le fallback SPA du Worker renvoie index.html en 200 pour les routes API inconnues.
+  if (result === null && response.status !== 204) {
+    const error = new Error("Le backend d’administration n’est pas déployé sur ce Worker.");
+    error.status = 404;
+    throw error;
+  }
+
   return result;
 }
 
@@ -233,15 +246,15 @@ export default function Admin() {
     try {
       if (tab === "overview" || tab === "projects") {
         const data = await adminRequest("/projects", { signal });
-        setProjects(data);
+        setProjects(Array.isArray(data) ? data : []);
       }
       if (tab === "overview" || tab === "skills") {
         const data = await adminRequest("/skills", { signal });
-        setCategories(data);
+        setCategories(Array.isArray(data) ? data : []);
       }
       if (tab === "overview" || tab === "messages") {
         const data = await adminRequest("/messages", { signal });
-        setMessages(data);
+        setMessages(Array.isArray(data) ? data : []);
       }
     } catch (loadError) {
       if (loadError.name !== "AbortError") {
@@ -272,20 +285,9 @@ export default function Admin() {
     `${project.title} ${project.categoryLabel}`.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const logout = async () => {
-    setBusy(true);
-    try {
-      await adminRequest("/logout", { method: "POST" });
-      setProjects([]);
-      setCategories([]);
-      setMessages([]);
-      setNotice("");
-      setError("");
-    } catch (logoutError) {
-      setError(logoutError.message);
-    } finally {
-      setBusy(false);
-    }
+  const logout = () => {
+    // Basic Auth n’a pas de déconnexion applicative : on quitte simplement l’admin.
+    window.location.assign("/");
   };
 
   const saveProject = async (form) => {
@@ -386,7 +388,7 @@ export default function Admin() {
           <div className={styles.userCard}>
             <span className={styles.avatar}>{username.slice(0, 1).toUpperCase()}</span>
             <span className={styles.userInfo}><strong>{username}</strong><small>Administrateur</small></span>
-            <button type="button" onClick={logout} disabled={busy} aria-label="Se déconnecter" title="Se déconnecter">↗</button>
+            <button type="button" onClick={logout} disabled={busy} aria-label="Quitter l’administration" title="Quitter l’administration">↗</button>
           </div>
         </div>
       </aside>

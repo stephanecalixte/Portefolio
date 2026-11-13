@@ -1,4 +1,4 @@
-// Protège /admin et /admin/* par HTTP Basic Auth.
+// Protège /admin, /admin/*, /api/admin et /api/admin/* par HTTP Basic Auth.
 // Les identifiants viennent de ADMIN_USER / ADMIN_PASSWORD (jamais du code).
 // Toutes les autres routes passent immédiatement à context.next().
 
@@ -6,7 +6,10 @@ const REALM = 'Basic realm="Admin", charset="UTF-8"';
 let configurationErrorLogged = false;
 
 function isAdminPath(pathname) {
-  return pathname === "/admin" || pathname.startsWith("/admin/");
+  return pathname === "/admin" ||
+    pathname.startsWith("/admin/") ||
+    pathname === "/api/admin" ||
+    pathname.startsWith("/api/admin/");
 }
 
 function unauthorized() {
