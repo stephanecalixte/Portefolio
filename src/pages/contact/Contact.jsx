@@ -88,7 +88,12 @@ export default function Contact() {
 
 
 
-          <form className={styles.form} onSubmit={handleSubmit(onSubmit)} noValidate>
+          <form
+            className={styles.form}
+            onSubmit={handleSubmit(onSubmit)}
+            aria-busy={isSubmitting}
+            noValidate
+          >
             <div className={styles.fieldRow}>
               <div className={styles.field}>
                 <label htmlFor="contact-name">Votre nom *</label>
@@ -177,6 +182,17 @@ export default function Contact() {
                 })}
               />
               {errors.message && <span className={styles.fieldError} id="contact-message-error">{errors.message.message}</span>}
+            </div>
+
+            <div className={styles.honeypot} aria-hidden="true">
+              <label htmlFor="contact-honeypot">Laissez ce champ vide</label>
+              <input
+                id="contact-honeypot"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                {...register("_honey")}
+              />
             </div>
 
             <button className={styles.submitButton} type="submit" disabled={isSubmitting}>

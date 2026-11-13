@@ -1,0 +1,14 @@
+# Copiez ce fichier vers .dev.vars (ignoré par Git) et remplacez les valeurs.
+# .dev.vars est lu automatiquement par `wrangler pages dev`.
+
+# Clé API Resend (https://resend.com/api-keys)
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxx
+
+# Adresse qui reçoit les messages du formulaire
+CONTACT_TO_EMAIL=your.email@example.com
+
+# Adresse d’envoi : elle doit appartenir à un domaine vérifié dans Resend
+RESEND_FROM_EMAIL=Portfolio <contact@your-domain.com>
+
+# Optionnel : origine autorisée en CORS en plus de localhost:5173 et localhost:3000
+ALLOWED_ORIGIN=

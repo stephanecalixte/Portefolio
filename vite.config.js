@@ -15,6 +15,13 @@ export default defineConfig(({ mode }) => {
     ],
     server: {
       proxy: {
+        // Les routes servies par Cloudflare Pages Functions (port 8788) :
+        // contact (Resend) et données D1. Ces entrées doivent rester avant "/api" :
+        // Vite utilise la première correspondance.
+        "/api/admin": "http://localhost:3000",
+        "/api/contact": "http://localhost:8788",
+        "/api/projects": "http://localhost:8788",
+        "/api/skills": "http://localhost:8788",
         "/api": "http://localhost:3000",
         "/media": `http://127.0.0.1:${mediaPort}`,
       },

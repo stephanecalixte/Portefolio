@@ -1,7 +1,10 @@
-async function request(path, options = {}) {
+const CONTACT_ENDPOINT =
+  import.meta.env.VITE_CONTACT_ENDPOINT || "/api/contact";
+
+async function requestUrl(url, options = {}) {
   let response;
   try {
-    response = await fetch(`/api${path}`, {
+    response = await fetch(url, {
       ...options,
       headers: {
         ...(options.body ? { "Content-Type": "application/json" } : {}),
@@ -23,6 +26,10 @@ async function request(path, options = {}) {
   return result;
 }
 
+function request(path, options = {}) {
+  return requestUrl(`/api${path}`, options);
+}
+
 export function getSkills(signal) {
   return request("/skills", { signal });
 }
@@ -32,7 +39,7 @@ export function getProjects(signal) {
 }
 
 export function sendContactMessage(data) {
-  return request("/contact", {
+  return requestUrl(CONTACT_ENDPOINT, {
     method: "POST",
     body: JSON.stringify(data),
   });

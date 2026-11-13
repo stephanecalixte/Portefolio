@@ -1,0 +1,10 @@
+name = "calixteportfolio"
+compatibility_date = "2026-11-13"
+pages_build_output_dir = "./dist"
+
+# Remplacez database_id par l'identifiant retourné par :
+#   npx wrangler d1 create calixteportfolio
+[[d1_databases]]
+binding = "DB"
+database_name = "calixteportfolio"
+database_id = "00000000-0000-0000-0000-000000000000"
