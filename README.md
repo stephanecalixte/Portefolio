@@ -68,6 +68,42 @@ Depuis le tableau de bord, les projets peuvent être créés, modifiés, publié
 
 Pour vérifier la version de production : `npm run build`.
 
+## Migration Pages → Workers (static assets)
+
+Le message **« Variables cannot be added to a Worker that only has static assets »** apparaît quand Cloudflare ne déploie que les fichiers statiques : aucun script Worker n’est détecté, donc il n’existe aucun runtime auquel attacher des variables. Un projet Pages avec `functions/` ne doit pas être déployé comme un simple « Worker with static assets ».
+
+Le projet utilise maintenant un point d’entrée Worker :
+
+- [`worker/index.js`](./worker/index.js) importe les handlers existants de `functions/` (`/api/contact`, `/api/projects`, `/api/skills`) et le middleware Basic Auth `functions/_middleware.js` pour `/admin`.
+- [`wrangler.toml`](./wrangler.toml) déclare `main = "worker/index.js"`, `[assets]` avec `directory = "./dist"`, `binding = "ASSETS"`, `not_found_handling = "single-page-application"` (routes React) et `run_worker_first = ["/api/*", "/admin", "/admin/*"]`.
+- Les autres chemins sont servis directement par les assets, sans exécuter le Worker.
+
+### Variables (Settings → Variables and Secrets)
+
+Dans le Worker : **Settings → Variables and Secrets**, renseignez :
+
+| Variable | Rôle |
+| --- | --- |
+| `RESEND_API_KEY` | Clé Resend (secret) |
+| `CONTACT_TO_EMAIL` | Adresse qui reçoit les messages |
+| `RESEND_FROM_EMAIL` | Adresse d’envoi d’un domaine vérifié |
+| `ADMIN_USER` | Identifiant du Basic Auth `/admin` |
+| `ADMIN_PASSWORD` | Mot de passe du Basic Auth `/admin` (secret) |
+| `ALLOWED_ORIGIN` | Optionnel : origine CORS supplémentaire |
+
+Marquez `RESEND_API_KEY` et `ADMIN_PASSWORD` comme secrets. Configurez **Production et Preview** si l’interface propose les deux environnements ; sinon, le jeu de variables du Worker s’applique aussi aux URLs de preview.
+
+### Local et déploiement
+
+```sh
+npm run build
+npm run dev:worker      # http://localhost:8788
+```
+
+Déploiement par Git : `git push` sur `master` si le Worker est connecté à Workers Builds (build `npm run build`, deploy `npx wrangler deploy`). Manuellement : `npm run deploy:worker`.
+
+Si le message persiste après déploiement, vérifiez dans cet ordre : `main` pointe vers `worker/index.js`, `run_worker_first` contient `/api/*`, `/admin` et `/admin/*`, le build produit bien `dist/`, et le projet Cloudflare est un **Worker** (pas un projet Pages).
+
 ## Formulaire de contact sur Cloudflare Pages
 
 Le front est un site statique React/Vite : il peut être hébergé sur Cloudflare Pages. Le formulaire de contact n’a pas besoin de serveur physique : il appelle une Cloudflare Pages Function située dans [`functions/api/contact.js`](./functions/api/contact.js), qui envoie l’e-mail avec l’API Resend. Aucun secret n’est présent dans le code : la fonction lit uniquement des variables d’environnement.
@@ -91,7 +127,7 @@ Le front est un site statique React/Vite : il peut être hébergé sur Cloudflar
 
 En local, copiez `.dev.vars.example` vers `.dev.vars` et renseignez les valeurs. Ce fichier est ignoré par Git.
 
-Sur Cloudflare Pages, ajoutez les mêmes variables dans **Settings → Environment variables**, pour les environnements **Production** et **Preview**. Marquez `RESEND_API_KEY` comme secret.
+Dans le Worker, ajoutez les mêmes variables dans **Settings → Variables and Secrets**, pour **Production** et **Preview** si l’interface le permet. Marquez `RESEND_API_KEY` et `ADMIN_PASSWORD` comme secrets.
 
 ### 3. Lancer en local
 
@@ -101,7 +137,7 @@ npm run build
 npm run dev:pages
 ```
 
-`npm run dev:pages` démarre la Function et les fichiers statiques sur `http://localhost:8788`. Dans un second terminal, démarrez l’interface Vite :
+`npm run dev:worker` démarre le Worker (Functions + assets) sur `http://localhost:8788`. Dans un second terminal, démarrez l’interface Vite :
 
 ```sh
 npm run dev
@@ -109,24 +145,24 @@ npm run dev
 
 Vite redirige `/api/contact` vers `http://localhost:8788` et les autres routes `/api` vers l’API Express locale (`http://localhost:3000`). Si vous préférez appeler la Function directement, définissez `VITE_CONTACT_ENDPOINT` (par exemple `http://localhost:8788/api/contact`) dans un fichier `.env.local`, et ajoutez cette origine à `ALLOWED_ORIGIN` si nécessaire. En production, l’appel est same-origin sur `/api/contact`, donc le CORS n’est pas utilisé.
 
-### 4. Déployer sur Cloudflare Pages
+### 4. Déployer le Worker
 
-**Via Git (recommandé)** : connectez le dépôt dans le tableau de bord Cloudflare Pages, puis utilisez :
+**Via Git (recommandé)** : le Worker doit être connecté à **Workers Builds** avec :
 
 - Commande de build : `npm run build`
-- Dossier de sortie : `dist`
+- Commande de déploiement : `npx wrangler deploy`
 
 **Via Wrangler** :
 
 ```sh
-npx wrangler pages deploy dist --project-name calixteportfolio
+npm run deploy:worker
 ```
 
-Le fichier `wrangler.toml` déclare `pages_build_output_dir = "./dist"`. Aucun fichier `_redirects` n’est nécessaire : comme le projet n’a pas de `404.html` à la racine, Cloudflare Pages applique automatiquement son repli SPA et sert `index.html` pour les routes de React Router (`/contact`, `/projects`, etc.). N’ajoutez pas de règle `/* /index.html 200` : elle est désormais rejetée comme boucle infinie au déploiement.
+Le fichier `wrangler.toml` déclare `main = "worker/index.js"` et `[assets]` avec `directory = "./dist"`. Le repli SPA est assuré par `not_found_handling = "single-page-application"` : toutes les routes React (`/contact`, `/projects`, etc.) servent `index.html`. N’ajoutez pas de fichier `_redirects` avec `/* /index.html 200`, il est rejeté comme boucle infinie.
 
 ### 5. Tester le formulaire
 
-Avec `npm run dev:pages` démarré :
+Avec `npm run dev:worker` démarré :
 
 ```sh
 curl.exe -i -X POST http://localhost:8788/api/contact ^
@@ -151,14 +187,14 @@ Les routes `/api/projects` et `/api/skills` sont servies par Cloudflare D1 via [
    npx wrangler d1 create calixteportfolio
    ```
 
-2. Copiez la valeur `database_id` retournée dans [`wrangler.toml`](./wrangler.toml), à la place du placeholder `00000000-0000-0000-0000-000000000000`. Vous pouvez aussi lier la base dans le tableau de bord Pages (**Settings → Bindings → D1 database**), avec le binding `DB`.
+2. Copiez la valeur `database_id` retournée dans [`wrangler.toml`](./wrangler.toml), à la place du placeholder `00000000-0000-0000-0000-000000000000`. Vous pouvez aussi lier la base dans le tableau de bord du Worker (**Settings → Bindings → D1 database**), avec le binding `DB`.
 3. Initialisez et remplissez la base **locale** :
 
    ```sh
    npm run db:init:local
    npm run db:seed:local
    npm run build
-   npm run dev:pages
+   npm run dev:worker
    ```
 
 4. Initialisez et remplissez la base **de production** avant de déployer :
@@ -166,13 +202,13 @@ Les routes `/api/projects` et `/api/skills` sont servies par Cloudflare D1 via [
    ```sh
    npm run db:init
    npm run db:seed
-   npx wrangler pages deploy dist --project-name calixteportfolio
+   npm run deploy:worker
    ```
 
 Les scripts utilisent le binding `DB` déclaré dans `wrangler.toml`. Les fichiers [`sql/d1-schema.sql`](./sql/d1-schema.sql) et [`sql/d1-seed.sql`](./sql/d1-seed.sql) sont idempotents et peuvent être relancés. D1 stocke les tableaux `tech` et `features` en JSON texte ; les Functions les reconvertissent en tableaux pour le front.
 
-`npm run dev` proxifie `/api/contact`, `/api/projects` et `/api/skills` vers `wrangler pages dev` (port 8788), et `/api/admin` vers l’API Express (port 3000). Le front local lit donc les mêmes données D1 que la production. En revanche, une modification faite via l’admin Express reste dans MariaDB et n’est pas répliquée automatiquement dans D1.
+`npm run dev` proxifie `/api/contact`, `/api/projects` et `/api/skills` vers `wrangler dev` (port 8788), et `/api/admin` vers l’API Express (port 3000). Le front local lit donc les mêmes données D1 que la production. En revanche, une modification faite via l’admin Express reste dans MariaDB et n’est pas répliquée automatiquement dans D1.
 
 ### Limite restante : administration
 
-L’espace `/admin` et les routes `/api/admin` dépendent toujours d’Express et de MariaDB : ils ne fonctionnent pas sur Cloudflare Pages. Pour administrer les projets en production, il faudra soit migrer l’admin vers D1 avec une authentification, soit modifier les données avec `npx wrangler d1 execute DB --remote --command "…"`.
+L’espace `/admin` et les routes `/api/admin` dépendent toujours d’Express et de MariaDB : ils ne fonctionnent pas sur le Worker déployé. La page `/admin` est protégée par Basic Auth via `functions/_middleware.js`, mais les routes `/api/admin/*` devront être protégées séparément si elles sont un jour déployées. Pour administrer les projets en production, il faudra soit migrer l’admin vers D1 avec une authentification, soit modifier les données avec `npx wrangler d1 execute DB --remote --command "…"`.
