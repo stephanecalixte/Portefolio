@@ -265,6 +265,21 @@ export async function onRequestPost({ request, env }) {
       return jsonResponse({ error: SEND_ERROR_MESSAGE }, 502, headers);
     }
 
+    // Persiste le message en D1 pour l'admin (non bloquant)
+    try {
+      const cleanName = String(data.name).slice(0, 200);
+      const cleanEmail = String(data.email).slice(0, 320);
+      const cleanSubject = String(data.subject || "").slice(0, 200);
+      const cleanMessage = String(data.message).slice(0, 5000);
+      await env.DB.prepare(
+        "INSERT INTO contact_messages (name, email, subject, message) VALUES (?, ?, ?, ?)",
+      )
+        .bind(cleanName, cleanEmail, cleanSubject, cleanMessage)
+        .run();
+    } catch (dbError) {
+      console.error("D1 insert failed:", dbError?.message || "erreur inconnue");
+    }
+
     return jsonResponse({ ok: true, message: SUCCESS_MESSAGE }, 200, headers);
   } catch (error) {
     console.error("Échec de l’appel à Resend :", error?.name || "erreur inconnue");
