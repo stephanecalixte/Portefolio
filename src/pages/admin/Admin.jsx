@@ -44,7 +44,7 @@ async function adminRequest(path, options = {}) {
   const result = response.status === 204 ? null : await response.json().catch(() => null);
   if (!response.ok) {
     const message = response.status === 404
-      ? "Les routes admin ne sont pas encore chargées. Redémarrez le serveur API."
+      ? "Le backend d’administration n’est pas déployé sur ce Worker."
       : result?.error || "La requête a échoué.";
     const error = new Error(message);
     error.status = response.status;
@@ -61,53 +61,6 @@ function formatDate(value) {
   return Number.isNaN(date.getTime())
     ? "Date inconnue"
     : new Intl.DateTimeFormat("fr-FR", { dateStyle: "medium", timeStyle: "short" }).format(date);
-}
-
-function Login({ onLogin, error, busy }) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
-  const submit = (event) => {
-    event.preventDefault();
-    onLogin({ username, password });
-  };
-
-  return (
-    <main className={styles.loginPage}>
-      <div className={styles.loginGlow} aria-hidden="true" />
-      <form className={styles.loginCard} onSubmit={submit}>
-        <span className={styles.brandMark}>CS<span>.</span></span>
-        <p className={styles.eyebrow}>ESPACE PRIVÉ</p>
-        <h1>Content de vous revoir.</h1>
-        <p className={styles.loginIntro}>Connectez-vous pour gérer votre portfolio.</p>
-        <label>
-          Identifiant
-          <input
-            autoComplete="username"
-            autoFocus
-            required
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-          />
-        </label>
-        <label>
-          Mot de passe
-          <input
-            autoComplete="current-password"
-            required
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </label>
-        {error && <p className={styles.error} role="alert">{error}</p>}
-        <button className={styles.primaryButton} type="submit" disabled={busy}>
-          {busy ? "Connexion…" : "Ouvrir mon espace"} <span aria-hidden="true">↗</span>
-        </button>
-        <p className={styles.loginFootnote}>Accès réservé à l’administrateur.</p>
-      </form>
-    </main>
-  );
 }
 
 function ProjectEditor({ project, onSave, onClose, busy }) {
@@ -259,11 +212,9 @@ function SkillEditor({ skill, categories, onSave, onClose, busy }) {
 }
 
 export default function Admin() {
-  const [authenticated, setAuthenticated] = useState(false);
-  const [checkingSession, setCheckingSession] = useState(true);
-  const [authError, setAuthError] = useState("");
+  // /admin est déjà protégé par Basic Auth : aucune session React à vérifier.
+  const username = "Admin";
   const [activeTab, setActiveTab] = useState("overview");
-  const [username, setUsername] = useState("");
   const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -295,7 +246,6 @@ export default function Admin() {
     } catch (loadError) {
       if (loadError.name !== "AbortError") {
         setError(loadError.message);
-        if (loadError.status === 401) setAuthenticated(false);
       }
     } finally {
       if (!signal?.aborted) setLoading(false);
@@ -304,31 +254,12 @@ export default function Admin() {
 
   useEffect(() => {
     const controller = new AbortController();
-    adminRequest("/session", { signal: controller.signal })
-      .then((session) => {
-        setUsername(session.username);
-        setAuthenticated(true);
-      })
-      .catch((sessionError) => {
-        if (sessionError.name !== "AbortError" && sessionError.status !== 401) {
-          setAuthError(sessionError.message);
-        }
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) setCheckingSession(false);
-      });
-    return () => controller.abort();
-  }, []);
-
-  useEffect(() => {
-    if (!authenticated) return undefined;
-    const controller = new AbortController();
     const timer = window.setTimeout(() => loadData(activeTab, controller.signal), 0);
     return () => {
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [activeTab, authenticated, loadData]);
+  }, [activeTab, loadData]);
 
   const counts = useMemo(() => ({
     projects: projects.length,
@@ -341,28 +272,10 @@ export default function Admin() {
     `${project.title} ${project.categoryLabel}`.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const login = async (credentials) => {
-    setBusy(true);
-    setAuthError("");
-    try {
-      const session = await adminRequest("/login", {
-        method: "POST",
-        body: JSON.stringify(credentials),
-      });
-      setUsername(session.username);
-      setAuthenticated(true);
-    } catch (loginError) {
-      setAuthError(loginError.message);
-    } finally {
-      setBusy(false);
-    }
-  };
-
   const logout = async () => {
     setBusy(true);
     try {
       await adminRequest("/logout", { method: "POST" });
-      setAuthenticated(false);
       setProjects([]);
       setCategories([]);
       setMessages([]);
@@ -447,13 +360,6 @@ export default function Admin() {
       setBusy(false);
     }
   };
-
-  if (checkingSession) {
-    return <main className={styles.loadingPage}><span className={styles.loader} />Vérification de la session…</main>;
-  }
-  if (!authenticated) {
-    return <Login onLogin={login} error={authError} busy={busy} />;
-  }
 
   return (
     <main className={styles.adminPage}>
