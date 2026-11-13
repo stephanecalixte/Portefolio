@@ -8,7 +8,7 @@ RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxx
 CONTACT_TO_EMAIL=your.email@example.com
 
 # Adresse d’envoi : elle doit appartenir à un domaine vérifié dans Resend
-RESEND_FROM_EMAIL=Portfolio <contact@your-domain.com>
+RESEND_FROM_EMAIL=onboarding@resend.dev
 
 # Optionnel : origine autorisée en CORS en plus de localhost:5173 et localhost:3000
 ALLOWED_ORIGIN=
