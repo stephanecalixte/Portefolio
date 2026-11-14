@@ -14,15 +14,25 @@
 
 /* ========== CONTENEUR PRINCIPAL ========== */
 .container {
-    background: radial-gradient(circle at 50% 30%, #1a222c 0%, #080b0f 100%);
-    min-height: 100vh;
-    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: 295px;
+    transform: translateX(120%);
+    opacity: 0;
+    /* left:50%;
+    transform: translateX(-50%); */
+    animation: none !important;
+    transition: none !important;
+    /* background: radial-gradient(circle at 50% 30%, #1a222c 0%, #080b0f 100%); */
+    min-height: auto;
+  
+    width: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-family: 'Segoe UI', Arial, sans-serif;
-    padding: 40px 20px;
+    /* padding: 40px 20px; */
     gap: 30px;
     box-sizing: border-box;
 }
@@ -31,8 +41,10 @@
    CHÂSSIS 1U
    ============================================================ */
 .firewall {
-    width: 100%;
-    max-width: 1080px;
+    animation: none !important;
+    transition: none !important;
+    /* width: 100%; */
+    max-width: 615px;
     height: 120px;
     background: linear-gradient(180deg, #e8eaed 0%, #c9ced4 45%, #a8afb7 100%);
     border-radius: 8px;
@@ -379,9 +391,9 @@
 
 @media (max-width: 750px) {
     .firewall {
-        height: auto;
+        /* height: auto; */
         flex-direction: column;
-        padding: 22px;
+        /* padding: 22px; */
         transform: none;
         gap: 18px;
     }

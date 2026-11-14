@@ -12,7 +12,7 @@ import DataCenter from "../../components/dataCenter/DataCenterScene";
 import dataCenterStyles from "../../components/dataCenter/DataCenterScene.module.css";
 import FanController from "../../components/fancontroller/FanController";
 import TVSection from "../../components/tv/TVSection";
-
+import Firewall from "../../components/firewall/firewall_fortigate";
 gsap.registerPlugin(ScrollTrigger);
 
 // ═══════════════════════════════════════════════════════════════════
@@ -184,6 +184,7 @@ const Home = () => {
 
   const racksWrapperRef = useRef(null);
   const fanWrapperRef = useRef(null);
+  const firewallRef = useRef(null);
   const videoStartRef = useRef(null);
 
   const ledSequenceRef = useRef(false);
@@ -201,6 +202,22 @@ const Home = () => {
   const [mediaCatalog, setMediaCatalog] = useState({ images: [], videos: [] });
   const [mediaError, setMediaError] = useState("");
   const [mediaLoaded, setMediaLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!mediaLoaded) return undefined;
+    const el = document.querySelector("[data-firewall]");
+    if (!el) return undefined;
+    const distance = el.offsetWidth * 1.2;
+    gsap.set(el, { clearProps: "transform", x: distance, opacity: 0 });
+    gsap.to(el, {
+      x: 0,
+      opacity: 1,
+      duration: 1.9,
+      delay: 0.35,
+      ease: "power4.out",
+    });
+    return () => gsap.killTweensOf(el);
+  }, [mediaLoaded]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -661,6 +678,10 @@ const Home = () => {
           HERO
           ═══════════════════════════════════════════════════════ */}
       <section id="accueil" className={styles.hero}>
+      <div style={{ opacity: 0.7, zIndex: 10 }}>
+        <Firewall />
+      </div>
+
         <div className={styles.name}>
           {["Calixte", "Stéphane"].map((word) => (
             <p className={styles.nameLine} key={word}>

@@ -2,7 +2,7 @@ import styles from './firewall_fortigate.module.css';
 
 export default function FirewallFortigate() {
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-firewall>
 
       {/* ===== CHÂSSIS FORTIGATE ===== */}
       <div className={styles.firewall}>
